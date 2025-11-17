@@ -8,13 +8,361 @@
 import UIKit
 
 class ReportDetailsView: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    
+    var backButton: UIButton!
+    var titleLabel: UILabel!
+    var updateButton: UIButton!
+    
+    var reporterInfoLabel: UILabel!
+    var reporterNameLabel: UILabel!
+    var reporterPhoneLabel: UILabel!
+    
+    var imageView: UIImageView!
+    var imageLabel: UILabel!
+    
+    var descriptionLabel: UILabel!
+    var descriptionTextView: UITextView!
+    
+    var showLessButton: UIButton!
+    
+    var timelineLabel: UILabel!
+    var timelineStackView: UIStackView!
+    
+    var actionButton: UIButton!
+    
+    var scrollView: UIScrollView!
+    var contentView: UIView!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.backgroundColor = .white
+        
+        setupScrollView()
+        setupHeader()
+        setupReporterInfo()
+        setupImage()
+        setupDescription()
+        setupShowLessButton()
+        setupTimeline()
+        setupActionButton()
+        
+        initConstraints()
     }
-    */
+    
+    func setupScrollView() {
+        scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(scrollView)
+        
+        contentView = UIView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+    }
+    
+    func setupHeader() {
+        backButton = UIButton(type: .system)
+        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(backButton)
+        
+        titleLabel = UILabel()
+        titleLabel.text = "Report Title"
+        titleLabel.font = .preferredFont(forTextStyle: .headline)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(titleLabel)
+        
+        updateButton = UIButton(type: .system)
+        updateButton.setTitle("Update", for: .normal)
+        updateButton.layer.borderWidth = 1
+        updateButton.layer.borderColor = UIColor.systemBlue.cgColor
+        updateButton.layer.cornerRadius = 8
+        updateButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+        updateButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(updateButton)
+    }
+    
+    func setupReporterInfo() {
+        reporterInfoLabel = UILabel()
+        reporterInfoLabel.text = "Reporter Info"
+        reporterInfoLabel.font = .preferredFont(forTextStyle: .subheadline)
+        reporterInfoLabel.textColor = .secondaryLabel
+        reporterInfoLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(reporterInfoLabel)
+        
+        reporterNameLabel = UILabel()
+        reporterNameLabel.text = "Alice A."
+        reporterNameLabel.font = .preferredFont(forTextStyle: .body)
+        reporterNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(reporterNameLabel)
+        
+        reporterPhoneLabel = UILabel()
+        reporterPhoneLabel.text = "012-345-6789"
+        reporterPhoneLabel.font = .preferredFont(forTextStyle: .body)
+        reporterPhoneLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(reporterPhoneLabel)
+    }
+    
+    func setupImage() {
+        imageLabel = UILabel()
+        imageLabel.text = "Image"
+        imageLabel.font = .preferredFont(forTextStyle: .subheadline)
+        imageLabel.textColor = .secondaryLabel
+        imageLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(imageLabel)
+        
+        imageView = UIImageView()
+        imageView.backgroundColor = .systemGray5
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 8
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(imageView)
+    }
+    
+    func setupDescription() {
+        descriptionLabel = UILabel()
+        descriptionLabel.text = "Description of the report"
+        descriptionLabel.font = .preferredFont(forTextStyle: .subheadline)
+        descriptionLabel.textColor = .secondaryLabel
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(descriptionLabel)
+        
+        descriptionTextView = UITextView()
+        descriptionTextView.font = .preferredFont(forTextStyle: .body)
+        descriptionTextView.isEditable = false
+        descriptionTextView.isScrollEnabled = false
+        descriptionTextView.textContainer.lineFragmentPadding = 0
+        descriptionTextView.textContainerInset = .zero
+        descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(descriptionTextView)
+    }
+    
+    func setupShowLessButton() {
+        showLessButton = UIButton(type: .system)
+        showLessButton.setTitle("^ show less", for: .normal)
+        showLessButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(showLessButton)
+    }
+    
+    func setupTimeline() {
+        timelineLabel = UILabel()
+        timelineLabel.text = "Timeline"
+        timelineLabel.font = .preferredFont(forTextStyle: .headline)
+        timelineLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(timelineLabel)
+        
+        timelineStackView = UIStackView()
+        timelineStackView.axis = .vertical
+        timelineStackView.spacing = 16
+        timelineStackView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(timelineStackView)
+    }
+    
+    func setupActionButton() {
+        actionButton = UIButton(type: .system)
+        actionButton.setTitle("Action", for: .normal)
+        actionButton.layer.borderWidth = 2
+        actionButton.layer.cornerRadius = 12
+        actionButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(actionButton)
+    }
+    
+    // View for rehabber
+    func configureForRehabber() {
+        actionButton.setTitle("Withdraw Claim", for: .normal)
+        actionButton.setTitleColor(.systemPurple, for: .normal)
+        actionButton.layer.borderColor = UIColor.systemPurple.cgColor
+        updateButton.isHidden = false
+    }
+    
+    // View for reporter
+    func configureForReporter(isClaimed: Bool) {
+        if isClaimed {
+            actionButton.setTitle("Cancel Report", for: .normal)
+            actionButton.setTitleColor(.systemRed, for: .normal)
+            actionButton.layer.borderColor = UIColor.systemRed.cgColor
+        } else {
+            actionButton.setTitle("Delete Report", for: .normal)
+            actionButton.setTitleColor(.systemRed, for: .normal)
+            actionButton.layer.borderColor = UIColor.systemRed.cgColor
+        }
+        updateButton.isHidden = true
+    }
+    
+    // View for others????
+    func configureForViewer() {
+        actionButton.isHidden = true
+        updateButton.isHidden = true
+    }
+    
+    func addTimelineEvent(title: String, description: String, isExpanded: Bool = false) {
+        let eventView = TimelineEventView(title: title, description: description, isExpanded: isExpanded)
+        timelineStackView.addArrangedSubview(eventView)
+    }
+    
+    func initConstraints() {
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            backButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            backButton.widthAnchor.constraint(equalToConstant: 44),
+            backButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            titleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 8),
+            
+            updateButton.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
+            updateButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            reporterInfoLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 16),
+            reporterInfoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            
+            reporterNameLabel.topAnchor.constraint(equalTo: reporterInfoLabel.bottomAnchor, constant: 4),
+            reporterNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            
+            reporterPhoneLabel.topAnchor.constraint(equalTo: reporterNameLabel.bottomAnchor, constant: 2),
+            reporterPhoneLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            
+            imageLabel.topAnchor.constraint(equalTo: reporterPhoneLabel.bottomAnchor, constant: 16),
+            imageLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            imageView.topAnchor.constraint(equalTo: imageLabel.bottomAnchor, constant: 4),
+            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            imageView.widthAnchor.constraint(equalToConstant: 80),
+            imageView.heightAnchor.constraint(equalToConstant: 80),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            descriptionTextView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 4),
+            descriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            descriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            showLessButton.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 4),
+            showLessButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            
+            timelineLabel.topAnchor.constraint(equalTo: showLessButton.bottomAnchor, constant: 24),
+            timelineLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            
+            timelineStackView.topAnchor.constraint(equalTo: timelineLabel.bottomAnchor, constant: 12),
+            timelineStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            timelineStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            actionButton.topAnchor.constraint(equalTo: timelineStackView.bottomAnchor, constant: 24),
+            actionButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            actionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            actionButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
+// MARK: - Timeline Event View
+class TimelineEventView: UIView {
+    
+    var circleView: UIView!
+    var lineView: UIView!
+    var titleLabel: UILabel!
+    var descriptionLabel: UILabel!
+    var expandButton: UIButton!
+    
+    init(title: String, description: String, isExpanded: Bool = false) {
+        super.init(frame: .zero)
+        
+        setupCircleView()
+        setupLineView()
+        setupTitleLabel(title: title)
+        setupDescriptionLabel(description: description, isExpanded: isExpanded)
+        setupExpandButton()
+        
+        initConstraints()
+    }
+    
+    func setupCircleView() {
+        circleView = UIView()
+        circleView.backgroundColor = .systemGray4
+        circleView.layer.cornerRadius = 8
+        circleView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(circleView)
+    }
+    
+    func setupLineView() {
+        lineView = UIView()
+        lineView.backgroundColor = .systemGray4
+        lineView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(lineView)
+    }
+    
+    func setupTitleLabel(title: String) {
+        titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = .preferredFont(forTextStyle: .subheadline)
+        titleLabel.numberOfLines = 0
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(titleLabel)
+    }
+    
+    func setupDescriptionLabel(description: String, isExpanded: Bool) {
+        descriptionLabel = UILabel()
+        descriptionLabel.text = description
+        descriptionLabel.font = .preferredFont(forTextStyle: .caption1)
+        descriptionLabel.textColor = .secondaryLabel
+        descriptionLabel.numberOfLines = isExpanded ? 0 : 2
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(descriptionLabel)
+    }
+    
+    func setupExpandButton() {
+        expandButton = UIButton(type: .system)
+        expandButton.setTitle("More details ✓", for: .normal)
+        expandButton.titleLabel?.font = .preferredFont(forTextStyle: .caption2)
+        expandButton.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(expandButton)
+    }
+    
+    func initConstraints() {
+        NSLayoutConstraint.activate([
+            circleView.topAnchor.constraint(equalTo: self.topAnchor),
+            circleView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            circleView.widthAnchor.constraint(equalToConstant: 16),
+            circleView.heightAnchor.constraint(equalToConstant: 16),
+            
+            lineView.topAnchor.constraint(equalTo: circleView.bottomAnchor),
+            lineView.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
+            lineView.widthAnchor.constraint(equalToConstant: 2),
+            lineView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: self.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: circleView.trailingAnchor, constant: 12),
+            titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            expandButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 2),
+            expandButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            expandButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
