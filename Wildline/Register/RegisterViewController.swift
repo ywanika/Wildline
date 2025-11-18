@@ -21,7 +21,7 @@ class RegisterViewController: UIViewController {
         
 //        title = "Register"
         
-        registerView.buttonSelectType.menu = getMenuTypes()
+//        registerView.buttonSelectType.menu = getMenuTypes()
 
         // Do any additional setup after loading the view.
     }
@@ -30,18 +30,18 @@ class RegisterViewController: UIViewController {
         
     }
 
-    func getMenuTypes() -> UIMenu {
-        var menuItems = [UIAction]()
-                
-        for type in Utilities.userTypes {
-            let menuItem = UIAction(title: type,handler: {(_) in
-                                self.selectedType = type
-                                self.registerView.buttonSelectType.setTitle(self.selectedType, for: .normal)
-                            })
-            menuItems.append(menuItem)
-        }
-        
-        return UIMenu(title: "Select type", children: menuItems)
-    }
+//    func getMenuTypes() -> UIMenu {
+//        var menuItems = [UIAction]()
+//                
+//        for type in Utilities.userTypes {
+//            let menuItem = UIAction(title: type,handler: {(_) in
+//                                self.selectedType = type
+//                                self.registerView.buttonSelectType.setTitle(self.selectedType, for: .normal)
+//                            })
+//            menuItems.append(menuItem)
+//        }
+//        
+//        return UIMenu(title: "Select type", children: menuItems)
+//    }
 
 }

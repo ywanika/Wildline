@@ -22,7 +22,7 @@ class HomeView: UIView {
     
     func setupReportsTable() {
         reportsTable = UITableView()
-        reportsTable.register(ReportTableCellView.self, forCellReuseIdentifier: "id")
+        reportsTable.register(ReportTableViewCell.self, forCellReuseIdentifier: "id")
         reportsTable.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(reportsTable)
     }
