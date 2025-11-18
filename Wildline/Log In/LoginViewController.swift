@@ -32,11 +32,14 @@ class LoginViewController: UIViewController {
         
         if let unwrappedEmail = email, let unwrappedPassword = password {
             if !unwrappedEmail.isEmpty && !unwrappedPassword.isEmpty{
-                if unwrappedPassword != "admin" || unwrappedPassword != "user"{
+                if unwrappedPassword != "admin" && unwrappedPassword != "user"{
                     showErrorAlert(message: "Make password either 'admin' or 'user'")
                 }
                 UserToken.shared.saveUserId(unwrappedEmail)
                 UserToken.shared.saveUserRole(unwrappedPassword)
+                print(UserToken.shared.getUserId())
+                print(UserToken.shared.getUserRole())
+                // Destroy this screen on successful login
             }
         }
         

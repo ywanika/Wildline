@@ -17,8 +17,33 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "Home"
-
+        title = "Your Reports"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        
+        let profileButton = UIBarButtonItem(
+            image: UIImage(systemName: "person.circle"),
+            style: .plain,
+            target: self,
+            action: #selector(onProfileBarButtonTap)
+        )
+        
+        navigationItem.rightBarButtonItem = profileButton
+        
+        if UserToken.shared.getUserId()?.isEmpty == true {
+            showModal()
+        }
+    }
+    
+    @objc func onProfileBarButtonTap() {
+        let profileViewController = ProfileViewController()
+        navigationController?.pushViewController(profileViewController, animated: true)
+    }
+    
+    func showModal() {
+        let loginViewController = LoginViewController()
+        loginViewController.modalPresentationStyle = .fullScreen
+        self.present(loginViewController, animated: true)
     }
     
 
