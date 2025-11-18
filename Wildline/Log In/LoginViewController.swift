@@ -8,7 +8,6 @@
 import UIKit
 
 class LoginViewController: UIViewController {
-
     var loginView = LoginView()
     
     override func loadView() {
@@ -19,21 +18,40 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Login"
-
-        // Do any additional setup after loading the view.
+        
+        loginView.buttonLogin.addTarget(self, action: #selector(onLoginButtonTapped), for: .touchUpInside)
+        
     }
     
-    
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @objc func onLoginButtonTapped(){
+        
+        let email = loginView.textFieldEmail.text
+        let password = loginView.textFieldPassword.text
+        
+        //TODO
+        
+        if let unwrappedEmail = email, let unwrappedPassword = password {
+            if !unwrappedEmail.isEmpty && !unwrappedPassword.isEmpty{
+                if unwrappedPassword != "admin" || unwrappedPassword != "user"{
+                    showErrorAlert(message: "Make password either 'admin' or 'user'")
+                }
+                UserToken.shared.saveUserId(unwrappedEmail)
+                UserToken.shared.saveUserRole(unwrappedPassword)
+            }
+        }
+        
     }
-    */
+    
+    func showErrorAlert(message:String = ""){
+        let alert = UIAlertController(
+            title: "Error!",
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        self.present(alert, animated: true)
+    }
 
 }

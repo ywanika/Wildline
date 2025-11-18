@@ -67,7 +67,7 @@ class LoginView: UIView {
     
     func setupButtonRegister() {
         buttonRegister = UIButton(type: .system)
-        buttonRegister.setTitle("Create Account", for: .normal)
+        buttonRegister.setTitle("Don't have an account? Create One Here!", for: .normal)
         buttonRegister.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(buttonRegister)
     }
