@@ -11,10 +11,9 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         // USERS BOTTOM BUTTONS
         
-        //MARK: setting up red tab bar...
         let tabHome = UINavigationController(rootViewController: HomeViewController())
         let tabHomeBarItem = UITabBarItem(
             title: "Home",
@@ -74,6 +73,15 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
         // Do any additional setup after loading the view.
+    }
+    
+    func presentLoginScreen() {
+        let loginVC = LoginViewController() // or however you instantiate it
+        loginVC.modalPresentationStyle = .fullScreen // Makes it cover the entire screen
+        present(loginVC, animated: false, completion: nil) // animated: false for immediate display
     }
 }
