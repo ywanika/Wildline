@@ -15,8 +15,9 @@ struct Report{
     var description: String?
     var location: String?
     var status: String?
+    var createdAt: String?
     
-    init(title: String? = nil, userName: String? = nil, userEmail: String? = nil, userPhoneNumber: String? = nil, description: String? = nil, location: String? = nil, status: String? = nil) {
+    init(title: String? = nil, userName: String? = nil, userEmail: String? = nil, userPhoneNumber: String? = nil, description: String? = nil, location: String? = nil, status: String? = nil, createdAt: String? = nil) {
         self.title = title
         self.userName = userName
         self.userEmail = userEmail
@@ -24,5 +25,6 @@ struct Report{
         self.description = description
         self.location = location
         self.status = status
+        self.createdAt = createdAt
     }
 }
