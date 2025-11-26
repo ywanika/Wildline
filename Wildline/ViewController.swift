@@ -12,6 +12,8 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // USERS BOTTOM BUTTONS
+        
         //MARK: setting up red tab bar...
         let tabHome = UINavigationController(rootViewController: HomeViewController())
         let tabHomeBarItem = UITabBarItem(
@@ -42,8 +44,32 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
         tabLearn.tabBarItem = tabLearnBarItem
         tabLearn.title = "Learn"
         
+        let tabRehabReports = UINavigationController(rootViewController: ReportsMapViewController())
+        let tabRehabReportsItem = UITabBarItem(
+            title: "Reports",
+            image: UIImage(systemName: "exclamationmark.bubble")?.withRenderingMode(.alwaysOriginal),
+            selectedImage: UIImage(systemName: "exclamationmark.bubble.fill")
+        )
+        tabRehabReports.tabBarItem = tabRehabReportsItem
+        tabRehabReports.title = "Reports"
+        
+        let tabRehabAllClaims = UINavigationController(rootViewController: AllReportsViewController())
+        let tabRehabAllClaimsItem = UITabBarItem(
+            title: "All Claims",
+            image: UIImage(systemName: "long.text.page.and.pencil")?.withRenderingMode(.alwaysOriginal),
+            selectedImage: UIImage(systemName: "long.text.page.and.pencil.fill")
+        )
+        tabRehabAllClaims.tabBarItem = tabRehabAllClaimsItem
+        tabRehabAllClaims.title = "All Claims"
+        
+        
         //MARK: setting up this view controller as the Tab Bar Controller...
-        self.viewControllers = [tabHome, tabReport, tabLearn]
+        if UserToken.shared.getUserRole() == "admin" {
+            self.viewControllers = [tabHome, tabRehabReports, tabRehabAllClaims]
+        } else {
+            self.viewControllers = [tabHome, tabReport, tabLearn]
+        }
+        
     }
     
     override func viewDidLoad() {

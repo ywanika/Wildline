@@ -9,8 +9,16 @@ import UIKit
 
 class ReportDetailsViewController: UIViewController {
 
+    let reportsDetails = ReportDetailsView()
+    
+    override func loadView() {
+        view = reportsDetails
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        title = "Reports Details"
 
         // Do any additional setup after loading the view.
     }
