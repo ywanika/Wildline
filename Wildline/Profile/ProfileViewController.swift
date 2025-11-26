@@ -49,17 +49,19 @@ class ProfileViewController: UIViewController {
     @objc func onLogOutButtonTapped(){
         let logoutAlert = UIAlertController(title: "Logging out!", message: "Are you sure want to log out?",
             preferredStyle: .actionSheet)
-//        logoutAlert.addAction(UIAlertAction(title: "Yes, log out!", style: .default, handler: {(_) in
-//                do{
-////                    try Auth.auth().signOut()
-////                    UserCache.shared.clearUserId()
-//                    self.navigationController?.popViewController(animated: true)
-//                    self.navigationController?.popViewController(animated: true)
-//                }catch{
-//                    print("Error occured!")
-//                }
-//            })
-//        )
+        logoutAlert.addAction(UIAlertAction(title: "Yes, log out!", style: .default, handler: {(_) in
+                do{
+//                    try Auth.auth().signOut()
+//                    UserCache.shared.clearUserId()
+                    UserToken.shared.clearUserId()
+                    UserToken.shared.clearUserRole()
+                    self.navigationController?.popViewController(animated: true)
+                    self.navigationController?.popViewController(animated: true)
+                }catch{
+                    print("Error occured!")
+                }
+            })
+        )
         logoutAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
         self.present(logoutAlert, animated: true)
