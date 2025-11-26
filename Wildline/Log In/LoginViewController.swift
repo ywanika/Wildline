@@ -20,7 +20,12 @@ class LoginViewController: UIViewController {
         title = "Login"
         
         loginView.buttonLogin.addTarget(self, action: #selector(onLoginButtonTapped), for: .touchUpInside)
-        
+        loginView.buttonRegister.addTarget(self, action: #selector(onRegisterButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func onRegisterButtonTapped(){
+        let vc = RegisterViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func onLoginButtonTapped(){
@@ -35,11 +40,9 @@ class LoginViewController: UIViewController {
                 if unwrappedPassword != "admin" && unwrappedPassword != "user"{
                     showErrorAlert(message: "Make password either 'admin' or 'user'")
                 }
-                UserToken.shared.saveUserId(unwrappedEmail)
-                UserToken.shared.saveUserRole(unwrappedPassword)
-                print(UserToken.shared.getUserId())
-                print(UserToken.shared.getUserRole())
-                // Destroy this screen on successful login
+                
+                loginSuccessful(userId: unwrappedEmail, userRole: unwrappedPassword)
+                
             }
         }
         
@@ -55,6 +58,14 @@ class LoginViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         
         self.present(alert, animated: true)
+    }
+    
+    func loginSuccessful(userId: String, userRole: String) {
+        UserToken.shared.saveUserId(userId)
+        UserToken.shared.saveUserRole(userRole)
+        
+        // Dismiss the navigation controller (not just self)
+        navigationController?.dismiss(animated: true, completion: nil)
     }
 
 }

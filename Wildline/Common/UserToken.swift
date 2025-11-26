@@ -41,4 +41,16 @@ class UserToken {
     func clearUserRole() {
         defaults.removeObject(forKey: currentUserRole)
     }
+    
+    func logout() {
+        clearUserId()
+        clearUserRole()
+        
+        // Post notification that user logged out
+        NotificationCenter.default.post(name: .userDidLogout, object: nil)
+    }
+}
+
+extension Notification.Name {
+    static let userDidLogout = Notification.Name("userDidLogout")
 }

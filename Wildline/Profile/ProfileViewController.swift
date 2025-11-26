@@ -53,8 +53,7 @@ class ProfileViewController: UIViewController {
                 do{
 //                    try Auth.auth().signOut()
 //                    UserCache.shared.clearUserId()
-                    UserToken.shared.clearUserId()
-                    UserToken.shared.clearUserRole()
+                    UserToken.shared.logout()
                     self.navigationController?.popViewController(animated: true)
                     self.navigationController?.popViewController(animated: true)
                 }catch{
