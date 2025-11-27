@@ -111,6 +111,7 @@ class LoginView: UIView {
         buttonRegister.setTitle("Create Account", for: .normal)
         buttonRegister.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         buttonRegister.setTitleColor(UIColor(red: 0.25, green: 0.55, blue: 0.35, alpha: 1.0), for: .normal)
+        buttonRegister.setTitle("Don't have an account? Create One Here!", for: .normal)
         buttonRegister.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(buttonRegister)
     }

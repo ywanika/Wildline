@@ -17,6 +17,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+            
+        let window = UIWindow(windowScene: windowScene)
+            let mainVC = ViewController()
+            window.rootViewController = mainVC
+            window.makeKeyAndVisible()
+            self.window = window
+            
+            // Check login status after window is set up
+            if UserToken.shared.getUserId() == nil {
+                presentLogin()
+            }
+            
+            // Listen for logout notification
+            NotificationCenter.default.addObserver(self,
+                                                  selector: #selector(handleLogout),
+                                                  name: .userDidLogout,
+                                                  object: nil)
+    }
+    
+    @objc private func handleLogout() {
+        presentLogin()
+    }
+    
+    private func presentLogin() {
+        DispatchQueue.main.async { [weak self] in
+                guard let mainVC = self?.window?.rootViewController else { return }
+                let loginVC = LoginViewController()
+                
+                // Wrap in navigation controller
+                let navController = UINavigationController(rootViewController: loginVC)
+                navController.modalPresentationStyle = .fullScreen
+                
+                mainVC.present(navController, animated: true)
+            }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
