@@ -10,7 +10,7 @@ import UIKit
 class AllReportsViewController: UIViewController {
 
     let allReportsView = AllReportsView()
-    var reports: [String] = []
+    var reports = [Report]()
     
     override func loadView() {
         view = allReportsView
@@ -20,7 +20,13 @@ class AllReportsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         title = "All Claims"
-
+        
+        allReportsView.reportsTable.delegate = self
+        allReportsView.reportsTable.dataSource = self
+        
+        reports.append(Report(title: "lost falcon", userName: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: "10 Coventry Street, Boston, MA, 01226", status: "looking"))
+        allReportsView.reportsTable.reloadData()
+        
         // Do any additional setup after loading the view.
     }
 
@@ -42,11 +48,11 @@ extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "names",
+        let cell = tableView.dequeueReusableCell(withIdentifier: "title",
                                                  for: indexPath) as! AllReportsTableViewCell
         let report = reports[indexPath.row]
         cell.titleLabel.text = report.title
-        cell.distanceLabel.text = report.distance
+        cell.distanceLabel.text = report.location // TODO: calculate distance based on location
         cell.statusLabel.text = report.status
         return cell
     }
@@ -61,8 +67,8 @@ extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
         //            return
         //        }
         
-        let reportDetailsController = ReportDetailsViewController()
-        navigationController?.pushViewController(reportDetailsController, animated: true)
+        let quickLookViewController = QuickLookViewController()
+        navigationController?.pushViewController(quickLookViewController, animated: true)
         
         
         //        Task {
