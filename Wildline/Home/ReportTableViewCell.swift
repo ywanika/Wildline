@@ -42,7 +42,7 @@ class ReportTableViewCell: UITableViewCell {
     
     func setupTitleLabel(){
         titleLabel = UILabel()
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         wrapperCellView.addSubview(titleLabel)
     }
