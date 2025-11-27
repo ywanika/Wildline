@@ -1,8 +1,8 @@
 //
-//  LogInView.swift
-//  Wildline
+//  LoginView.swift
+//  Final Project
 //
-//  Created by Max Grotstein on 11/13/25.
+//  Created by Student on 11/16/25.
 //
 
 import UIKit
