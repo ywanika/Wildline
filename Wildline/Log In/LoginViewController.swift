@@ -10,7 +10,6 @@ import UIKit
 class LoginViewController: UIViewController {
     var loginView = LoginView()
     
-    
     override func loadView() {
         view = loginView
     }
