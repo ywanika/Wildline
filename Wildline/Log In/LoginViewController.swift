@@ -2,7 +2,7 @@
 //  LoginViewController.swift
 //  Final Project
 //
-//  Created by Student on 11/16/25.
+//  Created by Max Grotstein on 11/16/25.
 //
 
 import UIKit
