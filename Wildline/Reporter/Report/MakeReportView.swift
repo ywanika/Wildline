@@ -26,9 +26,8 @@ class MakeReportView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(red: 0.95, green: 0.98, blue: 0.95, alpha: 1.0)
                 
-        //MARK: initializing the UI elements and constraints...
         setupScrollView()
         setupContentView()
         setupTitleLabel()
@@ -61,15 +60,30 @@ class MakeReportView: UIView {
     func setupTitleLabel() {
         titleLabel = UILabel()
         titleLabel.text = "Title"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(titleLabel)
     }
     
     func setupTitleField() {
         titleField = UITextField()
-        titleField.textAlignment = .left
-        titleField.borderStyle = UITextField.BorderStyle(rawValue: 1)!
+        titleField.borderStyle = .none
+        titleField.font = UIFont.systemFont(ofSize: 16)
+        titleField.backgroundColor = .white
+        titleField.layer.cornerRadius = 12
+        titleField.layer.borderWidth = 1.5
+        titleField.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: titleField.frame.height))
+        titleField.leftView = paddingView
+        titleField.leftViewMode = .always
+        
+        titleField.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
+        titleField.layer.shadowOffset = CGSize(width: 0, height: 2)
+        titleField.layer.shadowRadius = 4
+        titleField.layer.shadowOpacity = 1.0
+        
         titleField.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(titleField)
     }
@@ -77,17 +91,26 @@ class MakeReportView: UIView {
     func setupDescriptionLabel() {
         descriptionLabel = UILabel()
         descriptionLabel.text = "Description"
-        descriptionLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        descriptionLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        descriptionLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(descriptionLabel)
     }
     
     func setupDescriptionTextView() {
         descriptionTextView = UITextView()
-        descriptionTextView.layer.borderColor = UIColor.lightGray.cgColor
-        descriptionTextView.layer.borderWidth = 0.5
-        descriptionTextView.layer.cornerRadius = 5
+        descriptionTextView.backgroundColor = .white
+        descriptionTextView.layer.cornerRadius = 12
+        descriptionTextView.layer.borderWidth = 1.5
+        descriptionTextView.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
         descriptionTextView.font = UIFont.systemFont(ofSize: 16)
+        descriptionTextView.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        
+        descriptionTextView.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
+        descriptionTextView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        descriptionTextView.layer.shadowRadius = 4
+        descriptionTextView.layer.shadowOpacity = 1.0
+        
         descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(descriptionTextView)
     }
@@ -95,18 +118,33 @@ class MakeReportView: UIView {
     func setupLocationLabel() {
         locationLabel = UILabel()
         locationLabel.text = "Location"
-        locationLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        locationLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        locationLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         locationLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(locationLabel)
     }
     
     func setupAddressField() {
         addressField = UITextField()
-        addressField.textAlignment = .left
-        addressField.borderStyle = UITextField.BorderStyle(rawValue: 1)!
+        addressField.placeholder = "Address or Lat/Long"
+        addressField.borderStyle = .none
+        addressField.font = UIFont.systemFont(ofSize: 16)
+        addressField.backgroundColor = .white
+        addressField.layer.cornerRadius = 12
+        addressField.layer.borderWidth = 1.5
+        addressField.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: addressField.frame.height))
+        addressField.leftView = paddingView
+        addressField.leftViewMode = .always
+        
+        addressField.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
+        addressField.layer.shadowOffset = CGSize(width: 0, height: 2)
+        addressField.layer.shadowRadius = 4
+        addressField.layer.shadowOpacity = 1.0
+        
         addressField.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(addressField)
-        addressField.placeholder = "Address or Lat/Long"
     }
     
     func setupMapButton() {
@@ -116,6 +154,17 @@ class MakeReportView: UIView {
         mapButton.contentHorizontalAlignment = .fill
         mapButton.contentVerticalAlignment = .fill
         mapButton.imageView?.contentMode = .scaleAspectFit
+        mapButton.tintColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
+        mapButton.backgroundColor = .white
+        mapButton.layer.cornerRadius = 12
+        mapButton.layer.borderWidth = 1.5
+        mapButton.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        
+        mapButton.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
+        mapButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        mapButton.layer.shadowRadius = 4
+        mapButton.layer.shadowOpacity = 1.0
+        
         mapButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(mapButton)
     }
@@ -123,7 +172,8 @@ class MakeReportView: UIView {
     func setupSubmitPhotoLabel() {
         submitPhotoLabel = UILabel()
         submitPhotoLabel.text = "Submit Photo"
-        submitPhotoLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        submitPhotoLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        submitPhotoLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         submitPhotoLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(submitPhotoLabel)
     }
@@ -135,18 +185,36 @@ class MakeReportView: UIView {
         buttonSelectPhoto.contentHorizontalAlignment = .fill
         buttonSelectPhoto.contentVerticalAlignment = .fill
         buttonSelectPhoto.imageView?.contentMode = .scaleAspectFit
-        buttonSelectPhoto.translatesAutoresizingMaskIntoConstraints = false
+        buttonSelectPhoto.tintColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
+        buttonSelectPhoto.backgroundColor = .white
+        buttonSelectPhoto.layer.cornerRadius = 12
+        buttonSelectPhoto.layer.borderWidth = 1.5
+        buttonSelectPhoto.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        
+        buttonSelectPhoto.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
+        buttonSelectPhoto.layer.shadowOffset = CGSize(width: 0, height: 2)
+        buttonSelectPhoto.layer.shadowRadius = 4
+        buttonSelectPhoto.layer.shadowOpacity = 1.0
+        
         buttonSelectPhoto.showsMenuAsPrimaryAction = true
+        buttonSelectPhoto.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(buttonSelectPhoto)
     }
 
     func setupSendReportButton() {
         sendReportButton = UIButton(type: .system)
-        sendReportButton.translatesAutoresizingMaskIntoConstraints = false
         sendReportButton.setTitle("Send Report", for: .normal)
-        sendReportButton.backgroundColor = .systemRed
+        sendReportButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        sendReportButton.backgroundColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
         sendReportButton.setTitleColor(.white, for: .normal)
-        sendReportButton.layer.cornerRadius = 8
+        sendReportButton.layer.cornerRadius = 12
+        
+        sendReportButton.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.3).cgColor
+        sendReportButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+        sendReportButton.layer.shadowRadius = 6
+        sendReportButton.layer.shadowOpacity = 1.0
+        
+        sendReportButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(sendReportButton)
     }
     
@@ -163,47 +231,49 @@ class MakeReportView: UIView {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
             titleField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            titleField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            titleField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            titleField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            titleField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+            titleField.heightAnchor.constraint(equalToConstant: 50),
             
             descriptionLabel.topAnchor.constraint(equalTo: titleField.bottomAnchor, constant: 20),
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
             descriptionTextView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
-            descriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            descriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            descriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            descriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 120),
             
             locationLabel.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 20),
-            locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
-            addressField.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 10),
-            addressField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            addressField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            addressField.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 8),
+            addressField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            addressField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+            addressField.heightAnchor.constraint(equalToConstant: 50),
             
-            mapButton.topAnchor.constraint(equalTo: addressField.bottomAnchor, constant: 20),
+            mapButton.topAnchor.constraint(equalTo: addressField.bottomAnchor, constant: 16),
             mapButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             mapButton.widthAnchor.constraint(equalToConstant: 200),
             mapButton.heightAnchor.constraint(equalToConstant: 150),
             
             submitPhotoLabel.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 20),
-            submitPhotoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            submitPhotoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
-            buttonSelectPhoto.topAnchor.constraint(equalTo: submitPhotoLabel.bottomAnchor, constant: 10),
+            buttonSelectPhoto.topAnchor.constraint(equalTo: submitPhotoLabel.bottomAnchor, constant: 8),
             buttonSelectPhoto.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             buttonSelectPhoto.widthAnchor.constraint(equalToConstant: 200),
             buttonSelectPhoto.heightAnchor.constraint(equalToConstant: 150),
             
-            sendReportButton.topAnchor.constraint(equalTo: buttonSelectPhoto.bottomAnchor, constant: 30),
+            sendReportButton.topAnchor.constraint(equalTo: buttonSelectPhoto.bottomAnchor, constant: 32),
             sendReportButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            sendReportButton.widthAnchor.constraint(equalToConstant: 200),
-            sendReportButton.heightAnchor.constraint(equalToConstant: 44),
-            sendReportButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
-            
+            sendReportButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            sendReportButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
+            sendReportButton.heightAnchor.constraint(equalToConstant: 50),
+            sendReportButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -32),
         ])
     }
     

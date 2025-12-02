@@ -42,9 +42,17 @@ class HomeViewController: UIViewController {
         homeView.reportsTable.reloadData()
     }
     
+    // Ciara - updated this to load the new Profile screens I made
     @objc func onProfileBarButtonTap() {
-        let profileViewController = ProfileViewController()
-        navigationController?.pushViewController(profileViewController, animated: true)
+        let profileVC: UIViewController
+        
+        if UserToken.shared.getUserRole() == "admin" {
+            profileVC = RehabberProfileViewController()
+        } else {
+            profileVC = ReporterProfileViewController()
+        }
+        
+        navigationController?.pushViewController(profileVC, animated: true)
     }
     
     func showModal() {
