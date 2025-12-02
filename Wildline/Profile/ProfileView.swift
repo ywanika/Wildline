@@ -23,8 +23,7 @@ class ProfileView: UIView {
         setupNameLabel()
         setupEmailLabel()
         setupLogoutButton()
-        
-        initConstraints()
+
     }
     
     func setupProfileImageView() {
