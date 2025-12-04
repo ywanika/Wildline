@@ -16,13 +16,12 @@ class RegisterView: UIView {
     var emailField: UITextField!
     var passwordField: UITextField!
     var phoneNumberField: UITextField!
-    var typeLabel: UILabel!
-    var buttonSelectType: UIButton!
+    var buttonRehaber: UIButton!
     var registerButton: UIButton!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(red: 0.95, green: 0.98, blue: 0.95, alpha: 1.0)
         
         setupWelcomeLabel()
         setupCreateYourAccountLabel()
@@ -31,11 +30,14 @@ class RegisterView: UIView {
         setupEmailField()
         setupPasswordField()
         setUpPhoneNumberField()
-        setupTypeLabel()
-        setupButtonSelectType()
+        setupButtonRehaber()
         setupRegisterButton()
         
         initConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func setupWelcomeLabel() {
@@ -55,73 +57,40 @@ class RegisterView: UIView {
     }
     
     func setupFirstNameField() {
-        firstNameField = UITextField()
-        firstNameField.placeholder = "First Name"
-        firstNameField.borderStyle = .roundedRect
-        firstNameField.translatesAutoresizingMaskIntoConstraints = false
+        firstNameField = createStyledTextField(placeholder: "First Name")
         self.addSubview(firstNameField)
     }
     
     func setupLastNameField() {
-        lastNameField = UITextField()
-        lastNameField.placeholder = "Last Name"
-        lastNameField.borderStyle = .roundedRect
-        lastNameField.translatesAutoresizingMaskIntoConstraints = false
+        lastNameField = createStyledTextField(placeholder: "Last Name")
         self.addSubview(lastNameField)
     }
    
     func setupEmailField() {
-        emailField = UITextField()
-        emailField.placeholder = "Email address"
-        emailField.borderStyle = .roundedRect
-        emailField.keyboardType = .emailAddress
-        emailField.autocapitalizationType = .none
-        emailField.translatesAutoresizingMaskIntoConstraints = false
+        emailField = createStyledTextField(placeholder: "Email address")
         self.addSubview(emailField)
     }
     
     func setupPasswordField() {
-        passwordField = UITextField()
-        passwordField.placeholder = "Password"
-        passwordField.borderStyle = .roundedRect
-        passwordField.autocapitalizationType = .none
-        passwordField.translatesAutoresizingMaskIntoConstraints = false
+        passwordField = createStyledTextField(placeholder: "Password")
         self.addSubview(passwordField)
     }
     
     func setUpPhoneNumberField() {
-        phoneNumberField = UITextField()
-        phoneNumberField.placeholder = "Phone number"
-        phoneNumberField.borderStyle = .roundedRect
-        phoneNumberField.keyboardType = .numberPad
-        phoneNumberField.autocapitalizationType = .none
-        phoneNumberField.translatesAutoresizingMaskIntoConstraints = false
+        phoneNumberField = createStyledTextField(placeholder: "Phone Number")
         self.addSubview(phoneNumberField)
     }
     
-    func setupTypeLabel() {
-        typeLabel = UILabel()
-        typeLabel.text = "How will you use our app?"
-        typeLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(typeLabel)
+    func setupButtonRehaber() {
+        buttonRehaber = createStyledSecondaryButton(title: "Register as Rehaber")
+        self.addSubview(buttonRehaber)
     }
     
-    func setupButtonSelectType() {
-        buttonSelectType = UIButton(type: .system)
-        buttonSelectType.setTitle("Select type", for: .normal)
-        buttonSelectType.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(buttonSelectType)
-    }
+    //TODO add license # field that only shows up if button ^ clicked
     
     func setupRegisterButton() {
-        registerButton = UIButton(type: .system)
-        registerButton.setTitle("Register", for: .normal)
-        registerButton.translatesAutoresizingMaskIntoConstraints = false
+        registerButton = createStyledPrimaryButton(title: "Register")
         self.addSubview(registerButton)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     func initConstraints() {
@@ -152,14 +121,11 @@ class RegisterView: UIView {
             phoneNumberField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             phoneNumberField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             
-            typeLabel.topAnchor.constraint(equalTo: phoneNumberField.bottomAnchor, constant: 20),
-            typeLabel.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
+            buttonRehaber.topAnchor.constraint(equalTo: phoneNumberField.bottomAnchor, constant: 16),
+            buttonRehaber.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            buttonRehaber.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             
-            buttonSelectType.topAnchor.constraint(equalTo: typeLabel.bottomAnchor, constant: 16),
-            buttonSelectType.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            buttonSelectType.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            
-            registerButton.topAnchor.constraint(equalTo: buttonSelectType.bottomAnchor, constant: 20),
+            registerButton.topAnchor.constraint(equalTo: buttonRehaber.bottomAnchor, constant: 20),
             registerButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             registerButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
         ])

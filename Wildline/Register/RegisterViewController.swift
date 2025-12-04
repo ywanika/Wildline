@@ -21,7 +21,7 @@ class RegisterViewController: UIViewController {
         
         title = "Register"
         
-        registerView.buttonSelectType.menu = getMenuTypes()
+        registerView.buttonRehaber.menu = getMenuTypes()
         registerView.registerButton.addTarget(self, action: #selector(onRegisteredButtonTap), for: .touchUpInside)
 
         // Do any additional setup after loading the view.
@@ -34,17 +34,19 @@ class RegisterViewController: UIViewController {
     @objc func onRegisteredButtonTap() {
         let email = registerView.emailField.text
         let password = registerView.passwordField.text
+        let phoneNumber = registerView.phoneNumberField.text
         
         //TODO add in validation
         
-        if let unwrappedEmail = email, let unwrappedPassword = password {
-            if !unwrappedEmail.isEmpty && !unwrappedPassword.isEmpty{
-                if unwrappedPassword != "admin" && unwrappedPassword != "user"{
-//                    showErrorAlert(message: "Make password either 'admin' or 'user'")
+        if let unwrappedEmail = email, let unwrappedPassword = password, let unwrappedPhoneNumber = phoneNumber {
+            if !unwrappedEmail.isEmpty && !unwrappedPassword.isEmpty && !unwrappedPhoneNumber.isEmpty{
+                if validateEmail(unwrappedEmail) && validatePassword(unwrappedPassword) && validatePhoneNumber(unwrappedPhoneNumber){
+                    if unwrappedPassword != "admin" && unwrappedPassword != "user"{
+                        //                    showErrorAlert(message: "Make password either 'admin' or 'user'")
+                    }
+                    
+                    loginSuccessful(userId: unwrappedEmail, userRole: unwrappedPassword)
                 }
-                
-                loginSuccessful(userId: unwrappedEmail, userRole: unwrappedPassword)
-                
             }
         }
     }
@@ -56,7 +58,7 @@ class RegisterViewController: UIViewController {
         for type in userTypes {
             let menuItem = UIAction(title: type,handler: {(_) in
                                 self.selectedType = type
-                                self.registerView.buttonSelectType.setTitle(self.selectedType, for: .normal)
+                                self.registerView.buttonRehaber.setTitle(self.selectedType, for: .normal)
                             })
             menuItems.append(menuItem)
         }
@@ -70,6 +72,45 @@ class RegisterViewController: UIViewController {
         
         // Dismiss the navigation controller (not just self)
         navigationController?.dismiss(animated: true, completion: nil)
+    }
+    
+    func validateEmail(_ email: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        if emailPred.evaluate(with: email){
+            return true
+        } else{
+            showErrorAlert(message: "Invalid Email!")
+            return false
+        }
+    }
+    
+    func validatePhoneNumber(_ phoneNum: String) -> Bool {
+        guard phoneNum.count == 10, let _ = Int(phoneNum) else {
+            showErrorAlert(message: "Invalid Phone Number!")
+            return false
+        }
+        return true
+    }
+    
+    func validatePassword(_ password: String) -> Bool {
+        guard password.count >= 8, let _ = Int(password) else {
+            showErrorAlert(message: "Password must be at least 8 characters")
+            return false
+        }
+        return true
+    }
+    
+    func showErrorAlert(message:String = ""){
+        let alert = UIAlertController(
+            title: "Error!",
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        self.present(alert, animated: true)
     }
 
 }
