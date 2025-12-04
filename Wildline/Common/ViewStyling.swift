@@ -62,7 +62,7 @@ extension UIView {
         
         button.layer.borderWidth = 2
         button.layer.borderColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0).cgColor // Vibrant green
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0), for: .normal)
         button.layer.cornerRadius = 12
         
         button.translatesAutoresizingMaskIntoConstraints = false

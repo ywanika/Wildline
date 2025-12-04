@@ -16,8 +16,7 @@ class RegisterView: UIView {
     var emailField: UITextField!
     var passwordField: UITextField!
     var phoneNumberField: UITextField!
-    var typeLabel: UILabel!
-    var buttonSelectType: UIButton!
+    var buttonRehaber: UIButton!
     var registerButton: UIButton!
     
     override init(frame: CGRect) {
@@ -31,7 +30,7 @@ class RegisterView: UIView {
         setupEmailField()
         setupPasswordField()
         setUpPhoneNumberField()
-        setupButtonSelectType()
+        setupButtonRehaber()
         setupRegisterButton()
         
         initConstraints()
@@ -82,9 +81,9 @@ class RegisterView: UIView {
         self.addSubview(phoneNumberField)
     }
     
-    func setupButtonSelectType() {
-        buttonSelectType = createStyledSecondaryButton(title: "Register as Rehaber")
-        self.addSubview(buttonSelectType)
+    func setupButtonRehaber() {
+        buttonRehaber = createStyledSecondaryButton(title: "Register as Rehaber")
+        self.addSubview(buttonRehaber)
     }
     
     //TODO add license # field that only shows up if button ^ clicked
@@ -122,14 +121,11 @@ class RegisterView: UIView {
             phoneNumberField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             phoneNumberField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             
-            typeLabel.topAnchor.constraint(equalTo: phoneNumberField.bottomAnchor, constant: 20),
-            typeLabel.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
+            buttonRehaber.topAnchor.constraint(equalTo: phoneNumberField.bottomAnchor, constant: 16),
+            buttonRehaber.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            buttonRehaber.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             
-            buttonSelectType.topAnchor.constraint(equalTo: typeLabel.bottomAnchor, constant: 16),
-            buttonSelectType.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            buttonSelectType.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            
-            registerButton.topAnchor.constraint(equalTo: buttonSelectType.bottomAnchor, constant: 20),
+            registerButton.topAnchor.constraint(equalTo: buttonRehaber.bottomAnchor, constant: 20),
             registerButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             registerButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
         ])

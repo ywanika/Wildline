@@ -21,7 +21,7 @@ class RegisterViewController: UIViewController {
         
         title = "Register"
         
-        registerView.buttonSelectType.menu = getMenuTypes()
+        registerView.buttonRehaber.menu = getMenuTypes()
         registerView.registerButton.addTarget(self, action: #selector(onRegisteredButtonTap), for: .touchUpInside)
 
         // Do any additional setup after loading the view.
@@ -58,7 +58,7 @@ class RegisterViewController: UIViewController {
         for type in userTypes {
             let menuItem = UIAction(title: type,handler: {(_) in
                                 self.selectedType = type
-                                self.registerView.buttonSelectType.setTitle(self.selectedType, for: .normal)
+                                self.registerView.buttonRehaber.setTitle(self.selectedType, for: .normal)
                             })
             menuItems.append(menuItem)
         }
