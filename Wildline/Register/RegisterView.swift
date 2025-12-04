@@ -22,7 +22,7 @@ class RegisterView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(red: 0.95, green: 0.98, blue: 0.95, alpha: 1.0)
         
         setupWelcomeLabel()
         setupCreateYourAccountLabel()
@@ -31,11 +31,14 @@ class RegisterView: UIView {
         setupEmailField()
         setupPasswordField()
         setUpPhoneNumberField()
-        setupTypeLabel()
         setupButtonSelectType()
         setupRegisterButton()
         
         initConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func setupWelcomeLabel() {
@@ -55,73 +58,40 @@ class RegisterView: UIView {
     }
     
     func setupFirstNameField() {
-        firstNameField = UITextField()
-        firstNameField.placeholder = "First Name"
-        firstNameField.borderStyle = .roundedRect
-        firstNameField.translatesAutoresizingMaskIntoConstraints = false
+        firstNameField = createStyledTextField(placeholder: "First Name")
         self.addSubview(firstNameField)
     }
     
     func setupLastNameField() {
-        lastNameField = UITextField()
-        lastNameField.placeholder = "Last Name"
-        lastNameField.borderStyle = .roundedRect
-        lastNameField.translatesAutoresizingMaskIntoConstraints = false
+        lastNameField = createStyledTextField(placeholder: "Last Name")
         self.addSubview(lastNameField)
     }
    
     func setupEmailField() {
-        emailField = UITextField()
-        emailField.placeholder = "Email address"
-        emailField.borderStyle = .roundedRect
-        emailField.keyboardType = .emailAddress
-        emailField.autocapitalizationType = .none
-        emailField.translatesAutoresizingMaskIntoConstraints = false
+        emailField = createStyledTextField(placeholder: "Email address")
         self.addSubview(emailField)
     }
     
     func setupPasswordField() {
-        passwordField = UITextField()
-        passwordField.placeholder = "Password"
-        passwordField.borderStyle = .roundedRect
-        passwordField.autocapitalizationType = .none
-        passwordField.translatesAutoresizingMaskIntoConstraints = false
+        passwordField = createStyledTextField(placeholder: "Password")
         self.addSubview(passwordField)
     }
     
     func setUpPhoneNumberField() {
-        phoneNumberField = UITextField()
-        phoneNumberField.placeholder = "Phone number"
-        phoneNumberField.borderStyle = .roundedRect
-        phoneNumberField.keyboardType = .numberPad
-        phoneNumberField.autocapitalizationType = .none
-        phoneNumberField.translatesAutoresizingMaskIntoConstraints = false
+        phoneNumberField = createStyledTextField(placeholder: "Phone Number")
         self.addSubview(phoneNumberField)
     }
     
-    func setupTypeLabel() {
-        typeLabel = UILabel()
-        typeLabel.text = "How will you use our app?"
-        typeLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(typeLabel)
-    }
-    
     func setupButtonSelectType() {
-        buttonSelectType = UIButton(type: .system)
-        buttonSelectType.setTitle("Select type", for: .normal)
-        buttonSelectType.translatesAutoresizingMaskIntoConstraints = false
+        buttonSelectType = createStyledSecondaryButton(title: "Register as Rehaber")
         self.addSubview(buttonSelectType)
     }
     
-    func setupRegisterButton() {
-        registerButton = UIButton(type: .system)
-        registerButton.setTitle("Register", for: .normal)
-        registerButton.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(registerButton)
-    }
+    //TODO add license # field that only shows up if button ^ clicked
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func setupRegisterButton() {
+        registerButton = createStyledPrimaryButton(title: "Register")
+        self.addSubview(registerButton)
     }
     
     func initConstraints() {

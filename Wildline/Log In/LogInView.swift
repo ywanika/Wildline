@@ -41,68 +41,18 @@ class LoginView: UIView {
     }
     
     func setupTextFieldEmail() {
-        textFieldEmail = UITextField()
-        textFieldEmail.borderStyle = .none
-        textFieldEmail.placeholder = "Email"
-        textFieldEmail.autocapitalizationType = .none
-        textFieldEmail.font = UIFont.systemFont(ofSize: 16)
-        textFieldEmail.backgroundColor = .white
-        textFieldEmail.layer.cornerRadius = 12
-        textFieldEmail.layer.borderWidth = 1.5
-        textFieldEmail.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
-        
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textFieldEmail.frame.height))
-        textFieldEmail.leftView = paddingView
-        textFieldEmail.leftViewMode = .always
-        
-        textFieldEmail.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
-        textFieldEmail.layer.shadowOffset = CGSize(width: 0, height: 2)
-        textFieldEmail.layer.shadowRadius = 4
-        textFieldEmail.layer.shadowOpacity = 1.0
-        
-        textFieldEmail.translatesAutoresizingMaskIntoConstraints = false
+        textFieldEmail = createStyledTextField(placeholder: "Email")
         self.addSubview(textFieldEmail)
     }
     
     func setupTextFieldPassword() {
-        textFieldPassword = UITextField()
-        textFieldPassword.borderStyle = .none
-        textFieldPassword.autocapitalizationType = .none
-        textFieldPassword.placeholder = "Password"
+        textFieldPassword = createStyledTextField(placeholder: "Password")
         textFieldPassword.isSecureTextEntry = true
-        textFieldPassword.font = UIFont.systemFont(ofSize: 16)
-        textFieldPassword.backgroundColor = .white
-        textFieldPassword.layer.cornerRadius = 12
-        textFieldPassword.layer.borderWidth = 1.5
-        textFieldPassword.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
-        
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textFieldPassword.frame.height))
-        textFieldPassword.leftView = paddingView
-        textFieldPassword.leftViewMode = .always
-        
-        textFieldPassword.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
-        textFieldPassword.layer.shadowOffset = CGSize(width: 0, height: 2)
-        textFieldPassword.layer.shadowRadius = 4
-        textFieldPassword.layer.shadowOpacity = 1.0
-        
-        textFieldPassword.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(textFieldPassword)
     }
     
     func setupButtonLogin() {
-        buttonLogin = UIButton(type: .system)
-        buttonLogin.setTitle("Login", for: .normal)
-        buttonLogin.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        buttonLogin.backgroundColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0) // Vibrant green
-        buttonLogin.setTitleColor(.white, for: .normal)
-        buttonLogin.layer.cornerRadius = 12
-        
-        buttonLogin.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.3).cgColor
-        buttonLogin.layer.shadowOffset = CGSize(width: 0, height: 4)
-        buttonLogin.layer.shadowRadius = 6
-        buttonLogin.layer.shadowOpacity = 1.0
-        
-        buttonLogin.translatesAutoresizingMaskIntoConstraints = false
+        buttonLogin = createStyledPrimaryButton(title: "Log In")
         self.addSubview(buttonLogin)
     }
     
