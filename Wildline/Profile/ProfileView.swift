@@ -41,6 +41,7 @@ class ProfileView: UIView {
         setupSettings()
         setupLogoutButton()
         
+        initConstraints()
     }
     
     func setupScrollView() {
