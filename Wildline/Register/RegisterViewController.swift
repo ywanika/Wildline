@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 class RegisterViewController: UIViewController {
 
     var registerView = RegisterView()
     var selectedType: String = ""
+    let childProgressView = ProgressSpinnerViewController()
+    var database = Firestore.firestore()
     
     override func loadView() {
         view = registerView
@@ -33,6 +37,8 @@ class RegisterViewController: UIViewController {
     
     @objc func onRegisteredButtonTap() {
         let email = registerView.emailField.text
+        let firstName = registerView.firstNameField.text
+        let lastName = registerView.lastNameField.text
         let password = registerView.passwordField.text
         let phoneNumber = registerView.phoneNumberField.text
         
@@ -41,14 +47,35 @@ class RegisterViewController: UIViewController {
         if let unwrappedEmail = email, let unwrappedPassword = password, let unwrappedPhoneNumber = phoneNumber {
             if !unwrappedEmail.isEmpty && !unwrappedPassword.isEmpty && !unwrappedPhoneNumber.isEmpty{
                 if validateEmail(unwrappedEmail) && validatePassword(unwrappedPassword) && validatePhoneNumber(unwrappedPhoneNumber){
-                    if unwrappedPassword != "admin" && unwrappedPassword != "user"{
-                        //                    showErrorAlert(message: "Make password either 'admin' or 'user'")
+                    
+                    Task {
+                        do {
+                            let exists = try await existsInDatabase(email: email!)
+                            if exists {
+                                showErrorAlert(message: "Email already exists.")
+                            }
+                        } catch {
+                            print("Error checking if email exists: \(error)")
+                        }
                     }
                     
+                    let user = User(email: email!, name: "\(firstName ?? "") \(lastName ?? "")", phoneNumber: unwrappedPhoneNumber, role: Roles(rawValue: "user") ?? Roles.User)
+                    registerNewAccount(user: user)
+                    
                     loginSuccessful(userId: unwrappedEmail, userRole: unwrappedPassword)
+
                 }
             }
         }
+    }
+        
+    func existsInDatabase(email: String) async throws -> Bool {
+        let db = Firestore.firestore()
+        
+        let query = db.collection("users").whereField("email", isEqualTo: email)
+        
+        let snapshot = try await query.getDocuments()
+        return !snapshot.documents.isEmpty
     }
 
     func getMenuTypes() -> UIMenu {
