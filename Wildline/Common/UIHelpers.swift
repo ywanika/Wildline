@@ -7,8 +7,8 @@
 
 import UIKit
 
-func showAlert(on vc: UIViewController, message: String) {
-    let ac = UIAlertController(title: "Error!", message: message, preferredStyle: .alert)
+func showAlert(on vc: UIViewController, title: String, message: String) {
+    let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
     ac.addAction(UIAlertAction(title: "OK", style: .default))
     vc.present(ac, animated: true)
 }

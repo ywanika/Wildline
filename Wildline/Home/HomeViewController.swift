@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class HomeViewController: UIViewController {
     let homeView = HomeView()
@@ -38,7 +39,7 @@ class HomeViewController: UIViewController {
         homeView.reportsTable.delegate = self
         homeView.reportsTable.dataSource = self
         
-        reports.append(Report(title: "lost falcon", userName: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: "10 Coventry Street, Boston, MA, 01226", status: "looking", createdAt: "10 December 2026"))
+        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
         homeView.reportsTable.reloadData()
     }
     
@@ -85,8 +86,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
                                                  for: indexPath) as! ReportTableViewCell
         let report = reports[indexPath.row]
         cell.titleLabel.text = report.title
-        cell.timeLabel.text = report.createdAt // TODO: calculate time since
-        cell.statusLabel.text = report.status
+        cell.timeLabel.text = DateFormatter().string(from: report.createdAt) // TODO: calculate time since
         return cell
     }
 

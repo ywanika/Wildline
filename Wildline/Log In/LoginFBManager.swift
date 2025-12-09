@@ -39,7 +39,7 @@ extension LoginViewController {
                 self.childProgressView.view.removeFromSuperview()
                 self.childProgressView.removeFromParent()
                 //MARK: alert that no user found or password wrong...
-                showAlert(on: self, message: "Incorrect Email-Password Combination!")
+                showAlert(on: self, title: "Error!", message: "Incorrect Email-Password Combination!")
             }
         })
     }
