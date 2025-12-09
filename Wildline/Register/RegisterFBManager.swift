@@ -16,20 +16,14 @@ extension RegisterViewController{
         //MARK: display the progress indicator...
         showActivityIndicator()
         //MARK: create a Firebase user with email and password...
-        if let firstName = registerView.firstNameField.text,
-           let lastName = registerView.lastNameField.text,
+        if !user.name.isEmpty,
            let email = registerView.emailField.text,
            let password = registerView.passwordField.text{
-            //TODO Validations....
-            if (firstName == "" || lastName == "") {
-                showAlert(on: self, message: "Need to have first and last name")
-            }
-            var name = firstName + " " + lastName
+            
             Auth.auth().createUser(withEmail: email, password: password, completion: {result, error in
                 if error == nil{
-                    print("In here")
                     //MARK: the user creation is successful...
-                    self.setNameOfTheUserInFirebaseAuth(name: name)
+                    self.setNameOfTheUserInFirebaseAuth(name: user.name)
                     self.saveContactToFireStore(user: user)
                     
                 }else{
@@ -64,7 +58,6 @@ extension RegisterViewController{
     }
     
     func saveContactToFireStore(user: User) {
-        print("Made it here")
         let collectionUsers = database
             .collection("users")
         
@@ -72,17 +65,16 @@ extension RegisterViewController{
         showActivityIndicator()
         
         do{
-            print("Made it here 2")
             try collectionUsers.addDocument(from: user, completion: {(error) in
                 if error == nil{
-                    //MARK: hide progress indicator...
-                    self.hideActivityIndicator()
                     Task {
                         do {
                             try await self.setupUserDefaultsUserId(email: user.email)
+                            self.loginSuccessful(userId: UserToken.shared.getUserId()!, userRole: user.role)
+                            //MARK: hide progress indicator...
+                            self.hideActivityIndicator()
                         }
                     }
-                    self.loginSuccessful(userId: UserToken.shared.getUserId()!, userRole: "user")
                 }
             })
         }catch{

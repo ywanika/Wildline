@@ -25,17 +25,20 @@ class RegisterViewController: UIViewController {
         
         title = "Register"
         
-        registerView.buttonRehaber.menu = getMenuTypes()
-        registerView.registerButton.addTarget(self, action: #selector(onRegisteredButtonTap), for: .touchUpInside)
-
+        registerView.registerButton.addTarget(self, action: #selector(onUserButtonTap), for: .touchUpInside)
+        registerView.buttonRehaber.addTarget(self, action: #selector(onRehaberButtonTap), for: .touchUpInside)
         // Do any additional setup after loading the view.
     }
     
-    @objc func onSelectTypeButtonTapped() {
-        
+    @objc func onUserButtonTap(){
+        onRegisteredButtonTap(userRole: Roles.User)
     }
     
-    @objc func onRegisteredButtonTap() {
+    @objc func onRehaberButtonTap(){
+        onRegisteredButtonTap(userRole: Roles.Admin)
+    }
+    
+    func onRegisteredButtonTap(userRole: Roles) {
         let email = registerView.emailField.text
         let firstName = registerView.firstNameField.text
         let lastName = registerView.lastNameField.text
@@ -59,12 +62,12 @@ class RegisterViewController: UIViewController {
                         }
                     }
                     
-                    let user = User(email: email!, name: "\(firstName ?? "") \(lastName ?? "")", phoneNumber: unwrappedPhoneNumber, role: Roles(rawValue: "user") ?? Roles.User)
+                    let user = User(email: email!, name: "\(firstName ?? "") \(lastName ?? "")", phoneNumber: unwrappedPhoneNumber, role: userRole)
                     registerNewAccount(user: user)
                     
-                    loginSuccessful(userId: unwrappedEmail, userRole: unwrappedPassword)
-
                 }
+            } else {
+                showAlert(on: self, message: "Fill in all fields.")
             }
         }
     }
@@ -93,9 +96,9 @@ class RegisterViewController: UIViewController {
         return UIMenu(title: "Select type", children: menuItems)
     }
     
-    func loginSuccessful(userId: String, userRole: String) {
+    func loginSuccessful(userId: String, userRole: Roles) {
         UserToken.shared.saveUserId(userId)
-        UserToken.shared.saveUserRole(userRole)
+        UserToken.shared.saveUserRole(userRole.rawValue)
         
         // Dismiss the navigation controller (not just self)
         navigationController?.dismiss(animated: true, completion: nil)

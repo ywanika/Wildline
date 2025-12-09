@@ -86,10 +86,8 @@ class RegisterView: UIView {
         self.addSubview(buttonRehaber)
     }
     
-    //TODO add license # field that only shows up if button ^ clicked
-    
     func setupRegisterButton() {
-        registerButton = createStyledPrimaryButton(title: "Register")
+        registerButton = createStyledPrimaryButton(title: "Register as User")
         self.addSubview(registerButton)
     }
     
@@ -121,13 +119,13 @@ class RegisterView: UIView {
             phoneNumberField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             phoneNumberField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             
-            buttonRehaber.topAnchor.constraint(equalTo: phoneNumberField.bottomAnchor, constant: 16),
-            buttonRehaber.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            buttonRehaber.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            
-            registerButton.topAnchor.constraint(equalTo: buttonRehaber.bottomAnchor, constant: 20),
+            registerButton.topAnchor.constraint(equalTo: phoneNumberField.bottomAnchor, constant: 30),
             registerButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             registerButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            
+            buttonRehaber.topAnchor.constraint(equalTo: registerButton.bottomAnchor, constant: 16),
+            buttonRehaber.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            buttonRehaber.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
         ])
     }
     

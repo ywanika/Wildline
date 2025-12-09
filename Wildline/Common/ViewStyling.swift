@@ -18,6 +18,7 @@ extension UIView {
     func createStyledTextField(placeholder: String) -> UITextField {
         let textField = UITextField()
         textField.placeholder = placeholder
+        textField.autocapitalizationType = UITextAutocapitalizationType.none
         textField.borderStyle = .none
         textField.font = UIFont.systemFont(ofSize: 16)
         textField.backgroundColor = .white

@@ -6,14 +6,31 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ProfileViewController: UIViewController {
 
-    var profileView: ProfileView!
+    var profileView = ProfileView()
+    var handleAuth: AuthStateDidChangeListenerHandle?
+    var currentUser:FirebaseAuth.User?
     
     override func loadView(){
-        profileView = ProfileView()
         view = profileView
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        handleAuth = Auth.auth().addStateDidChangeListener{ auth, user in
+            if user == nil{
+                //MARK: not signed in...
+            }else{
+                //MARK: the user is signed in...
+                self.currentUser = user
+                self.profileView.nameLabel.text = user?.displayName
+                self.profileView.emailLabel.text = user?.email
+            }
+        }
     }
     
     override func viewDidLoad() {
