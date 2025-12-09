@@ -67,7 +67,7 @@ class RegisterViewController: UIViewController {
                     
                 }
             } else {
-                showAlert(on: self, message: "Fill in all fields.")
+                showAlert(on: self, title: "Error!", message: "Fill in all fields.")
             }
         }
     }

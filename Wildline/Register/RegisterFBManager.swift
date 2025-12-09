@@ -20,10 +20,7 @@ extension RegisterViewController{
            let email = registerView.emailField.text,
            let password = registerView.passwordField.text{
             //TODO Validations....
-            if (firstName == "" || lastName == "") {
-                showAlert(on: self, title: "Error!", message: "Need to have first and last name")
-            }
-            var name = firstName + " " + lastName
+            
             Auth.auth().createUser(withEmail: email, password: password, completion: {result, error in
                 if error == nil{
                     //MARK: the user creation is successful...

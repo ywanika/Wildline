@@ -46,7 +46,7 @@ class LoginViewController: UIViewController {
             if !unwrappedEmail.isEmpty && !unwrappedPassword.isEmpty{
                 signInToFirebase(email: unwrappedEmail, password: unwrappedPassword)
             } else{
-                showAlert(on: self, message: "Fill in email and pasword!")
+                showAlert(on: self, title: "Error!", message: "Fill in email and pasword!")
             }
         }
         
