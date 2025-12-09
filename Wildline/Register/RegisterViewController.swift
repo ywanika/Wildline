@@ -61,8 +61,7 @@ class RegisterViewController: UIViewController {
                             print("Error checking if email exists: \(error)")
                         }
                     }
-                    
-                    let user = User(email: email!, name: "\(firstName ?? "") \(lastName ?? "")", phoneNumber: unwrappedPhoneNumber, role: userRole)
+                    let user = User(email: email!.lowercased(), name: "\(firstName ?? "") \(lastName ?? "")", phoneNumber: unwrappedPhoneNumber, role: userRole)
                     registerNewAccount(user: user)
                     
                 }
