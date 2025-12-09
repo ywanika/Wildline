@@ -34,7 +34,10 @@ extension MakeReportViewController {
             }
             print("report added with id: \(result.documentID)")
             
-//            self.saveChatToUserChatsFireStore(chatID: result.documentID, friendsArray: friendsArray)
+            // clear text fields if successfully added report
+            makeReportView.titleField.text = ""
+            makeReportView.descriptionTextView.text = ""
+            makeReportView.addressField.text = ""
             
         }catch{
             print("Error adding report!")
