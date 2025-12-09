@@ -52,7 +52,7 @@ class RegisterViewController: UIViewController {
                         do {
                             let exists = try await existsInDatabase(email: email!)
                             if exists {
-                                showAlert(on: self, message: "Email already exists.")
+                                showAlert(on: self, title: "Error!", message: "Email already exists.")
                             }
                         } catch {
                             print("Error checking if email exists: \(error)")
@@ -107,14 +107,14 @@ class RegisterViewController: UIViewController {
         if emailPred.evaluate(with: email){
             return true
         } else{
-            showAlert(on: self, message: "Invalid Email!")
+            showAlert(on: self, title: "Error!", message: "Invalid Email!")
             return false
         }
     }
     
     func validatePhoneNumber(_ phoneNum: String) -> Bool {
         guard phoneNum.count == 10, let _ = Int(phoneNum) else {
-            showAlert(on: self, message: "Invalid Phone Number!")
+            showAlert(on: self, title: "Error!", message: "Invalid Phone Number!")
             return false
         }
         return true
@@ -122,7 +122,7 @@ class RegisterViewController: UIViewController {
     
     func validatePassword(_ password: String) -> Bool {
         guard password.count >= 8, let _ = Int(password) else {
-            showAlert(on: self, message: "Password must be at least 8 characters")
+            showAlert(on: self, title: "Error!", message: "Password must be at least 8 characters")
             return false
         }
         return true
