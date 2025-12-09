@@ -7,10 +7,12 @@
 
 import UIKit
 import PhotosUI
+import FirebaseFirestore
 
 class MakeReportViewController: UIViewController {
     var makeReportView = MakeReportView()
     var pickedImage:UIImage?
+    var currentUser: User!
     
     override func loadView(){
         view = makeReportView
@@ -20,6 +22,8 @@ class MakeReportViewController: UIViewController {
         super.viewDidLoad()
         title = "Make a Report"
         makeReportView.buttonSelectPhoto.menu = getMenuImagePicker()
+        
+        makeReportView.sendReportButton.addTarget(self, action: #selector(onSendTapped), for: .touchUpInside)
     }
     
     func getMenuImagePicker() -> UIMenu{
@@ -56,6 +60,44 @@ class MakeReportViewController: UIViewController {
         present(photoPicker, animated: true, completion: nil)
     }
     
+    @objc func onSendTapped() {
+        guard let currentUserDocId = UserToken.shared.getUserId() else {
+            print("Current user id is nil")
+            return
+        }
+        
+        Task {
+            do {
+                let currentUser = try await getUser(for:currentUserDocId)
+                let createdBy = currentUser.name
+                let userEmail = currentUser.email
+                let userPhoneNumber = currentUser.phoneNumber
+                let title = makeReportView.titleField.text
+                let description = makeReportView.descriptionTextView.text
+                let location = makeReportView.addressField.text
+                let createdAt = Date()
+                
+                
+                // TODO: change geopoint to take in actual location text info
+                let report = Report(title: title!, createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber,description: description, location: GeoPoint(latitude: 0, longitude: 0), createdAt: createdAt)
+                
+                try await self.createReport(report: report)
+            }
+        }
+    }
+    
+    func getUser(for uid: String) async throws -> User {
+        
+        
+        let db = Firestore.firestore()
+        
+        let document = db.collection("users").document(uid)
+        let snapshot = try await document.getDocument()
+        
+        let user = try snapshot.data(as: User.self)
+        
+        return user
+    }
 
 }
 

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class AllReportsViewController: UIViewController {
 
@@ -24,7 +25,7 @@ class AllReportsViewController: UIViewController {
         allReportsView.reportsTable.delegate = self
         allReportsView.reportsTable.dataSource = self
         
-        reports.append(Report(title: "lost falcon", userName: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: "10 Coventry Street, Boston, MA, 01226", status: "looking"))
+        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
         allReportsView.reportsTable.reloadData()
         
         // Do any additional setup after loading the view.
@@ -52,8 +53,7 @@ extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
                                                  for: indexPath) as! AllReportsTableViewCell
         let report = reports[indexPath.row]
         cell.titleLabel.text = report.title
-        cell.distanceLabel.text = report.location // TODO: calculate distance based on location
-        cell.statusLabel.text = report.status
+        cell.distanceLabel.text = "0.5 miles" // TODO: calculate distance based on location
         return cell
     }
     
