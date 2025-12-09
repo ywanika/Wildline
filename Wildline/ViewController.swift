@@ -34,7 +34,7 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
         tabReport.title = "Report"
         
         //MARK: setting up blue tab bar...
-        let tabLearn = UINavigationController(rootViewController: LearnViewController())
+        let tabLearn = UINavigationController(rootViewController: EducationViewController())
         let tabLearnBarItem = UITabBarItem(
             title: "Learn",
             image: UIImage(systemName: "book")?.withRenderingMode(.alwaysOriginal),

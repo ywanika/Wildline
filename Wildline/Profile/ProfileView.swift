@@ -23,6 +23,9 @@ class ProfileView: UIView {
         setupNameLabel()
         setupEmailLabel()
         setupLogoutButton()
+        
+        //Attempting init constraints to move log out buttom
+        initConstraints()
 
     }
     
@@ -68,8 +71,10 @@ class ProfileView: UIView {
             emailLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 4),
             emailLabel.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
             
-            logoutButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 24),
-            logoutButton.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor)
+            logoutButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant:-20),
+                    logoutButton.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+                    logoutButton.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+                    logoutButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
     

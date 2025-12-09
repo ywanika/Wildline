@@ -9,16 +9,17 @@ import UIKit
 
 class EducationViewController: UIViewController {
 
-    var educationView = EducationView()
+    var educationView: EducationView!
     
     override func loadView() {
+        educationView = EducationView()
         view = educationView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Wildlife Rehabilitation"
+        title = "Learn"
 
         // Do any additional setup after loading the view.
     }

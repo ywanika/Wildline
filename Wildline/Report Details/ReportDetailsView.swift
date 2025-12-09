@@ -7,6 +7,8 @@
 
 import UIKit
 
+let ACCENT_COLOR = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
+
 class ReportDetailsView: UIView {
     
     var backButton: UIButton!
@@ -36,7 +38,7 @@ class ReportDetailsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(red: 0.95, green: 0.98, blue: 0.95, alpha: 1.0)
         
         setupScrollView()
         setupHeader()
@@ -63,21 +65,31 @@ class ReportDetailsView: UIView {
     func setupHeader() {
         backButton = UIButton(type: .system)
         backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        backButton.tintColor = ACCENT_COLOR
+        backButton.backgroundColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 0.1)
+        backButton.layer.cornerRadius = 22
         backButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(backButton)
         
         titleLabel = UILabel()
         titleLabel.text = "Report Title"
-        titleLabel.font = .preferredFont(forTextStyle: .headline)
+        titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(titleLabel)
         
         updateButton = UIButton(type: .system)
         updateButton.setTitle("Update", for: .normal)
-        updateButton.layer.borderWidth = 1
-        updateButton.layer.borderColor = UIColor.systemBlue.cgColor
-        updateButton.layer.cornerRadius = 8
+        updateButton.setTitleColor(.white, for: .normal)
+        updateButton.backgroundColor = ACCENT_COLOR
+        updateButton.layer.borderWidth = 0
+        updateButton.layer.cornerRadius = 10
+        updateButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         updateButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+        updateButton.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.2).cgColor
+        updateButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        updateButton.layer.shadowRadius = 4
+        updateButton.layer.shadowOpacity = 1.0
         updateButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(updateButton)
     }
@@ -85,8 +97,8 @@ class ReportDetailsView: UIView {
     func setupReporterInfo() {
         reporterInfoLabel = UILabel()
         reporterInfoLabel.text = "Reporter Info"
-        reporterInfoLabel.font = .preferredFont(forTextStyle: .subheadline)
-        reporterInfoLabel.textColor = .secondaryLabel
+        reporterInfoLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        reporterInfoLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         reporterInfoLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(reporterInfoLabel)
         
@@ -106,16 +118,18 @@ class ReportDetailsView: UIView {
     func setupImage() {
         imageLabel = UILabel()
         imageLabel.text = "Image"
-        imageLabel.font = .preferredFont(forTextStyle: .subheadline)
-        imageLabel.textColor = .secondaryLabel
+        imageLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        imageLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         imageLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(imageLabel)
         
         imageView = UIImageView()
-        imageView.backgroundColor = .systemGray5
+        imageView.backgroundColor = UIColor(red: 0.9, green: 0.95, blue: 0.9, alpha: 1.0)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 8
+        imageView.layer.cornerRadius = 12
+        imageView.layer.borderWidth = 2
+        imageView.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 0.3).cgColor
         imageView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(imageView)
     }
@@ -123,8 +137,8 @@ class ReportDetailsView: UIView {
     func setupDescription() {
         descriptionLabel = UILabel()
         descriptionLabel.text = "Description of the report"
-        descriptionLabel.font = .preferredFont(forTextStyle: .subheadline)
-        descriptionLabel.textColor = .secondaryLabel
+        descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        descriptionLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(descriptionLabel)
         
@@ -132,8 +146,10 @@ class ReportDetailsView: UIView {
         descriptionTextView.font = .preferredFont(forTextStyle: .body)
         descriptionTextView.isEditable = false
         descriptionTextView.isScrollEnabled = false
+        descriptionTextView.backgroundColor = UIColor(red: 0.98, green: 0.99, blue: 0.98, alpha: 1.0)
+        descriptionTextView.layer.cornerRadius = 8
         descriptionTextView.textContainer.lineFragmentPadding = 0
-        descriptionTextView.textContainerInset = .zero
+        descriptionTextView.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(descriptionTextView)
     }
@@ -141,14 +157,16 @@ class ReportDetailsView: UIView {
     func setupShowLessButton() {
         showLessButton = UIButton(type: .system)
         showLessButton.setTitle("^ show less", for: .normal)
+        showLessButton.setTitleColor(ACCENT_COLOR, for: .normal)
         showLessButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(showLessButton)
     }
     
     func setupTimeline() {
         timelineLabel = UILabel()
-        timelineLabel.text = "Timeline"
-        timelineLabel.font = .preferredFont(forTextStyle: .headline)
+        timelineLabel.text = "will implement later - Ciara"
+        timelineLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        timelineLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         timelineLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(timelineLabel)
         
@@ -162,14 +180,20 @@ class ReportDetailsView: UIView {
     func setupActionButton() {
         actionButton = UIButton(type: .system)
         actionButton.setTitle("Action", for: .normal)
-        actionButton.layer.borderWidth = 2
-        actionButton.layer.cornerRadius = 12
-        actionButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        actionButton.setTitleColor(ACCENT_COLOR, for: .normal)
+        actionButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        actionButton.layer.borderWidth = 2.5
+        actionButton.layer.borderColor = ACCENT_COLOR.cgColor
+        actionButton.layer.cornerRadius = 14
+        actionButton.contentEdgeInsets = UIEdgeInsets(top: 14, left: 0, bottom: 14, right: 0)
+        actionButton.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.15).cgColor
+        actionButton.layer.shadowOffset = CGSize(width: 0, height: 3)
+        actionButton.layer.shadowRadius = 6
+        actionButton.layer.shadowOpacity = 1.0
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(actionButton)
     }
     
-    // View for rehabber
     func configureForRehabber() {
         actionButton.setTitle("Withdraw Claim", for: .normal)
         actionButton.setTitleColor(.systemPurple, for: .normal)
@@ -177,7 +201,6 @@ class ReportDetailsView: UIView {
         updateButton.isHidden = false
     }
     
-    // View for reporter
     func configureForReporter(isClaimed: Bool) {
         if isClaimed {
             actionButton.setTitle("Cancel Report", for: .normal)
@@ -191,7 +214,6 @@ class ReportDetailsView: UIView {
         updateButton.isHidden = true
     }
     
-    // View for others????
     func configureForViewer() {
         actionButton.isHidden = true
         updateButton.isHidden = true
@@ -273,7 +295,6 @@ class ReportDetailsView: UIView {
     }
 }
 
-// MARK: - Timeline Event View
 class TimelineEventView: UIView {
     
     var circleView: UIView!
@@ -296,7 +317,7 @@ class TimelineEventView: UIView {
     
     func setupCircleView() {
         circleView = UIView()
-        circleView.backgroundColor = .systemGray4
+        circleView.backgroundColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
         circleView.layer.cornerRadius = 8
         circleView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(circleView)
@@ -304,7 +325,7 @@ class TimelineEventView: UIView {
     
     func setupLineView() {
         lineView = UIView()
-        lineView.backgroundColor = .systemGray4
+        lineView.backgroundColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 0.4)
         lineView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(lineView)
     }
@@ -312,7 +333,8 @@ class TimelineEventView: UIView {
     func setupTitleLabel(title: String) {
         titleLabel = UILabel()
         titleLabel.text = title
-        titleLabel.font = .preferredFont(forTextStyle: .subheadline)
+        titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.4, blue: 0.25, alpha: 1.0)
         titleLabel.numberOfLines = 0
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(titleLabel)
@@ -321,8 +343,8 @@ class TimelineEventView: UIView {
     func setupDescriptionLabel(description: String, isExpanded: Bool) {
         descriptionLabel = UILabel()
         descriptionLabel.text = description
-        descriptionLabel.font = .preferredFont(forTextStyle: .caption1)
-        descriptionLabel.textColor = .secondaryLabel
+        descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        descriptionLabel.textColor = UIColor(red: 0.3, green: 0.35, blue: 0.3, alpha: 1.0)
         descriptionLabel.numberOfLines = isExpanded ? 0 : 2
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(descriptionLabel)
@@ -331,7 +353,8 @@ class TimelineEventView: UIView {
     func setupExpandButton() {
         expandButton = UIButton(type: .system)
         expandButton.setTitle("More details ✓", for: .normal)
-        expandButton.titleLabel?.font = .preferredFont(forTextStyle: .caption2)
+        expandButton.setTitleColor(ACCENT_COLOR, for: .normal)
+        expandButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .medium)
         expandButton.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(expandButton)
     }
