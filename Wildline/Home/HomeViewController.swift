@@ -46,11 +46,12 @@ class HomeViewController: UIViewController {
     @objc func onProfileBarButtonTap() {
         let profileVC: UIViewController
         
-        if UserToken.shared.getUserRole() == "admin" {
-            profileVC = RehabberProfileViewController()
-        } else {
-            profileVC = ReporterProfileViewController()
-        }
+//        if UserToken.shared.getUserRole() == "admin" {
+//            profileVC = RehabberProfileViewController()
+//        } else {
+//            profileVC = ReporterProfileViewController()
+//        }
+        profileVC = ProfileViewController()
         
         navigationController?.pushViewController(profileVC, animated: true)
     }
