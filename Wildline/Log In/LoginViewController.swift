@@ -6,9 +6,16 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 class LoginViewController: UIViewController {
     var loginView = LoginView()
+    let childProgressView = ProgressSpinnerViewController()
+    
+    var handleAuth: AuthStateDidChangeListenerHandle?
+    var currentUser:FirebaseAuth.User?
+    let database = Firestore.firestore()
     
     override func loadView() {
         view = loginView
@@ -37,12 +44,7 @@ class LoginViewController: UIViewController {
         
         if let unwrappedEmail = email, let unwrappedPassword = password {
             if !unwrappedEmail.isEmpty && !unwrappedPassword.isEmpty{
-                if unwrappedPassword != "admin" && unwrappedPassword != "user"{
-                    showErrorAlert(message: "Make password either 'admin' or 'user'")
-                }
-                
-                loginSuccessful(userId: unwrappedEmail, userRole: unwrappedPassword)
-                
+                signInToFirebase(email: unwrappedEmail, password: unwrappedPassword)
             }
         }
         
@@ -61,8 +63,8 @@ class LoginViewController: UIViewController {
     }
     
     func loginSuccessful(userId: String, userRole: String) {
-        UserToken.shared.saveUserId(userId)
-        UserToken.shared.saveUserRole(userRole)
+        // UserToken.shared.saveUserId(userId)
+        // UserToken.shared.saveUserRole(userRole)
         
         // Dismiss the navigation controller (not just self)
         navigationController?.dismiss(animated: true, completion: nil)

@@ -19,17 +19,19 @@ extension LoginViewController {
         //MARK: authenticating the user...
         Auth.auth().signIn(withEmail: email, password: password, completion: {(result, error) in
             if error == nil{
-                //MARK: can you hide the progress indicator here?
-                self.childProgressView.willMove(toParent: nil)
-                self.childProgressView.view.removeFromSuperview()
-                self.childProgressView.removeFromParent()
                 
                 Task {
                     do {
                         try await self.setupUserDefaultsUserId(email: email)
-                        self.goToMain()
                     }
+                    //MARK: can you hide the progress indicator here?
+                    self.childProgressView.willMove(toParent: nil)
+                    self.childProgressView.view.removeFromSuperview()
+                    self.childProgressView.removeFromParent()
+                    
+                    self.navigationController?.dismiss(animated: true, completion: nil)
                 }
+                
                 
             }else{
                 //MARK: can you hide the progress indicator here?
@@ -37,7 +39,7 @@ extension LoginViewController {
                 self.childProgressView.view.removeFromSuperview()
                 self.childProgressView.removeFromParent()
                 //MARK: alert that no user found or password wrong...
-                self.showError(message: "Incorrect Email-Password Combination!")
+                showAlert(on: self, message: "Incorrect Email-Password Combination!")
             }
         })
     }
@@ -52,8 +54,12 @@ extension LoginViewController {
            print("User not found")
            return
         }
-        
+        print(Date())
+        print(document.documentID)
+        print(document.data()["role"] as! String)
         UserToken.shared.saveUserId(document.documentID)
         UserToken.shared.saveUserRole(document.data()["role"] as! String)
+        print(UserToken.shared.getUserId())
+        print(UserToken.shared.getUserRole())
     }
 }

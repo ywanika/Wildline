@@ -65,8 +65,10 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
         //MARK: setting up this view controller as the Tab Bar Controller...
         if UserToken.shared.getUserRole() == "admin" {
             self.viewControllers = [tabHome, tabRehabReports, tabRehabAllClaims]
-        } else {
+        } else if UserToken.shared.getUserRole() == "user" {
             self.viewControllers = [tabHome, tabReport, tabLearn]
+        } else {
+            print(UserToken.shared.getUserRole())
         }
         
     }
