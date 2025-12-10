@@ -1,26 +1,32 @@
 //
-//  ReportView.swift
-//  Wildline
+//  ReportView.swift
+//  Wildline
 //
-//  Created by Max Grotstein on 11/13/25.
+//  Created by Max Grotstein on 11/13/25.
 //
 
 import UIKit
+import MapKit
 
 class MakeReportView: UIView {
-
+    
     var scrollView: UIScrollView!
     var contentView: UIView!
-    
     var titleLabel: UILabel!
     var titleField: UITextField!
     var descriptionLabel: UILabel!
     var descriptionTextView: UITextView!
     var locationLabel: UILabel!
     var addressField: UITextField!
+
+    weak var delegate: LocationSelectionDelegate?
+    var selectedLatitude: Double?
+    var selectedLongitude: Double?
+    
+    var mapPreview: MKMapView!
     var mapButton: UIButton!
     var sendReportButton: UIButton!
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -34,11 +40,47 @@ class MakeReportView: UIView {
         setupDescriptionTextView()
         setupLocationLabel()
         setupAddressField()
+        setupMapPreview()
         setupMapButton()
+        
+        mapButton.addTarget(self, action: #selector(mapButtonTapped), for: .touchUpInside)
+        
         setupSendReportButton()
         
         initConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc func addressFieldTapped() {
+        delegate?.requestCurrentGPSLocation()
+    }
+
+    @objc func mapButtonTapped() {
+        delegate?.mapButtonTapped()
+    }
+
+    func updateLocationDisplay(latitude: Double, longitude: Double, address: String?) {
+        self.selectedLatitude = latitude
+        self.selectedLongitude = longitude
         
+        let coordString = String(format: "Lat: %.6f, Lon: %.6f", latitude, longitude)
+        
+        addressField.text = address ?? coordString
+        addressField.textColor = .systemGreen
+    }
+    
+    func updateMapPreview(coordinate: CLLocationCoordinate2D) {
+        let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        mapPreview.setRegion(region, animated: true)
+
+        mapPreview.removeAnnotations(mapPreview.annotations)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        mapPreview.addAnnotation(annotation)
     }
     
     func setupScrollView() {
@@ -130,7 +172,7 @@ class MakeReportView: UIView {
         addressField.layer.borderWidth = 1.5
         addressField.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
         
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: addressField.frame.height))
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: titleField.frame.height))
         addressField.leftView = paddingView
         addressField.leftViewMode = .always
         
@@ -141,25 +183,26 @@ class MakeReportView: UIView {
         
         addressField.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(addressField)
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addressFieldTapped))
+        addressField.addGestureRecognizer(tapGesture)
+        addressField.isUserInteractionEnabled = true
+    }
+    
+    func setupMapPreview() {
+        mapPreview = MKMapView()
+        mapPreview.isUserInteractionEnabled = false
+        mapPreview.layer.cornerRadius = 12
+        mapPreview.layer.borderWidth = 1.5
+        mapPreview.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        mapPreview.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapPreview)
     }
     
     func setupMapButton() {
         mapButton = UIButton(type: .system)
         mapButton.setTitle("", for: .normal)
-        mapButton.setImage(UIImage(systemName: "map.fill"), for: .normal)
-        mapButton.contentHorizontalAlignment = .fill
-        mapButton.contentVerticalAlignment = .fill
-        mapButton.imageView?.contentMode = .scaleAspectFit
-        mapButton.tintColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
-        mapButton.backgroundColor = .white
-        mapButton.layer.cornerRadius = 12
-        mapButton.layer.borderWidth = 1.5
-        mapButton.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
-        
-        mapButton.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
-        mapButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-        mapButton.layer.shadowRadius = 4
-        mapButton.layer.shadowOpacity = 1.0
+        mapButton.backgroundColor = .clear
         
         mapButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(mapButton)
@@ -219,11 +262,16 @@ class MakeReportView: UIView {
             addressField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
             addressField.heightAnchor.constraint(equalToConstant: 50),
             
-            mapButton.topAnchor.constraint(equalTo: addressField.bottomAnchor, constant: 16),
-            mapButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            mapButton.widthAnchor.constraint(equalToConstant: 200),
-            mapButton.heightAnchor.constraint(equalToConstant: 150),
+            mapPreview.topAnchor.constraint(equalTo: addressField.bottomAnchor, constant: 16),
+            mapPreview.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            mapPreview.widthAnchor.constraint(equalToConstant: 200),
+            mapPreview.heightAnchor.constraint(equalToConstant: 150),
             
+            mapButton.topAnchor.constraint(equalTo: mapPreview.topAnchor),
+            mapButton.leadingAnchor.constraint(equalTo: mapPreview.leadingAnchor),
+            mapButton.trailingAnchor.constraint(equalTo: mapPreview.trailingAnchor),
+            mapButton.bottomAnchor.constraint(equalTo: mapPreview.bottomAnchor),
+
             sendReportButton.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 32),
             sendReportButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             sendReportButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
@@ -232,9 +280,4 @@ class MakeReportView: UIView {
             sendReportButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -32),
         ])
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
 }
