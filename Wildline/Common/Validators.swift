@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 
 func isValidReport(createdBy: String, userEmail: String, userPhoneNumber: String, title: String, description: String, location: String, createdAt: Date) -> Bool {
-    if (createdBy.isEmpty || userEmail.isEmpty || userPhoneNumber.isEmpty || title.isEmpty || description.isEmpty || location.isEmpty) {
+    if (createdBy.isEmpty || userEmail.isEmpty || userPhoneNumber.isEmpty || title.isEmpty || location.isEmpty) {
         return false
     }
     return true
