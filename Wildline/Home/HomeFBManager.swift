@@ -40,6 +40,7 @@ extension HomeViewController {
         var open = [(report: Report, latestStatusTime: Date)]()
         var closed = [(report: Report, latestStatusTime: Date)]()
         var statusTimes: [String: Date] = [:]
+        var statusTypes: [String: UpdateTypes] = [:]
         
         for report in reports {
             guard let reportId = report.id else { continue }
@@ -58,6 +59,7 @@ extension HomeViewController {
                     let latestStatusTime = latestStatus.createdAt
                     
                     statusTimes[reportId] = latestStatusTime
+                    statusTypes[reportId] = latestStatus.type
                     
                     // Check if report is closed (Finished or Cancelled)
                     if latestStatus.type == .Finished || latestStatus.type == .Cancelled {
@@ -69,16 +71,19 @@ extension HomeViewController {
                     // No status found, consider it open
                     // and use report creation time
                     statusTimes[reportId] = report.createdAt
+                    statusTypes[reportId] = .Created
                     open.append((report: report, latestStatusTime: report.createdAt))
                 }
             } catch {
                 print("Error fetching status for report \(reportId): \(error)")
                 statusTimes[reportId] = report.createdAt
+                statusTypes[reportId] = .Created
                 open.append((report: report, latestStatusTime: report.createdAt))
             }
         }
         
         self.latestStatusTimes = statusTimes
+        self.latestStatusTypes = statusTypes
         
         // Sort both arrays by date (most recent first)
         self.openReports = open.sorted { $0.latestStatusTime > $1.latestStatusTime }.map {$0.report}

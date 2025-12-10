@@ -13,6 +13,7 @@ class HomeViewController: UIViewController {
     var openReports = [Report]()
     var closedReports = [Report]()
     var latestStatusTimes: [String: Date] = [:] // reportId: latest status time
+    var latestStatusTypes: [String: UpdateTypes] = [:]
     var displayedReports: [Report] {
         return homeView.segmentedControl.selectedSegmentIndex == 0 ? openReports : closedReports
     }
@@ -142,11 +143,18 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         let report = displayedReports[indexPath.row]
         cell.titleLabel.text = report.title
         if let reportId = report.id, let latestStatusTime = latestStatusTimes[reportId] {
-            cell.timeLabel.text = "Updated \(Utilities.relativeString(from: latestStatusTime))" 
+            cell.timeLabel.text = "Updated \(Utilities.relativeString(from: latestStatusTime))"
         } else {
             print("No latest status time for report with id: \(report.id ?? "nil")")
             cell.timeLabel.text = Utilities.relativeString(from: report.createdAt)
         }
+        
+        if let reportId = report.id, let latestStatusType = latestStatusTypes[reportId] {
+            cell.statusLabel.text = "\(latestStatusType.rawValue)"
+        } else {
+            cell.statusLabel.text = "Created"
+        }
+         
         return cell
     }
 
