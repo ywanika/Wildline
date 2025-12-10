@@ -28,4 +28,15 @@ class Utilities{
 
         return GeoPoint(latitude: lat, longitude: lon)
     }
+    
+    static func getUser(for uid: String) async throws -> User {
+        let db = Firestore.firestore()
+        
+        let document = db.collection("users").document(uid)
+        let snapshot = try await document.getDocument()
+        
+        let user = try snapshot.data(as: User.self)
+        
+        return user
+    }
 }

@@ -8,6 +8,8 @@
 import UIKit
 
 class ReportTableViewCell: UITableViewCell {
+    static let identifier = "ReportTableViewCell"
+    
     var wrapperCellView: UIView!
     var titleLabel: UILabel!
     var timeLabel: UILabel!

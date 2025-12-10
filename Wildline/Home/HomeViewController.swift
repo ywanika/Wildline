@@ -11,9 +11,56 @@ import FirebaseFirestore
 class HomeViewController: UIViewController {
     let homeView = HomeView()
     var reports = [Report]()
+    let db = Firestore.firestore()
+    var listener: ListenerRegistration?
     
     override func loadView() {
         view = homeView
+    }
+    
+    @MainActor
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        listener?.remove()
+        
+        guard let currentUserDocId = UserToken.shared.getUserId() else {
+            print("Current user id is nil")
+            return
+        }
+        
+        listener = self.db.collection("users").document(currentUserDocId).collection("reports")
+            .addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
+                    if let error = error {
+                        print("Error fetching reports: \(error)")
+                        return
+                    }
+                    
+                    guard let documents = querySnapshot?.documents else {
+                        print("No documents found")
+                        return
+                    }
+                
+                    var reportRefs = [] as [ReportRef]
+                    
+                    for document in documents {
+                        do {
+                            let reportRef = try document.data(as: ReportRef.self)
+                            reportRefs.append(reportRef)
+                        } catch {
+                            print("Error decoding reportRef: \(error)")
+                        }
+                    }
+                
+                    Task {
+                        await self.fetchReports(from: reportRefs)
+                    }
+                })
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        listener?.remove()
     }
 
     override func viewDidLoad() {
@@ -36,11 +83,12 @@ class HomeViewController: UIViewController {
             showModal()
         }
         
+        homeView.reportsTable.register(ReportTableViewCell.self, forCellReuseIdentifier: ReportTableViewCell.identifier)
         homeView.reportsTable.delegate = self
         homeView.reportsTable.dataSource = self
         
-        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
-        homeView.reportsTable.reloadData()
+//        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
+//        homeView.reportsTable.reloadData()
     }
     
     // Ciara - updated this to load the new Profile screens I made
@@ -62,17 +110,6 @@ class HomeViewController: UIViewController {
         loginViewController.modalPresentationStyle = .fullScreen
         self.present(loginViewController, animated: true)
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
@@ -82,7 +119,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "title",
+        let cell = tableView.dequeueReusableCell(withIdentifier: ReportTableViewCell.identifier,
                                                  for: indexPath) as! ReportTableViewCell
         let report = reports[indexPath.row]
         cell.titleLabel.text = report.title

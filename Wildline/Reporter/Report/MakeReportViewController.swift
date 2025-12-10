@@ -72,7 +72,7 @@ class MakeReportViewController: UIViewController {
 //                guard let currentUser = try await getUser(for:currentUserDocId) else {
 //                    showAlert(on: self, title: "Error", message: "Could not fetch user data.")
 //                }
-                let currentUser = try await getUser(for:currentUserDocId)
+                let currentUser = try await Utilities.getUser(for:currentUserDocId)
                 let createdBy = currentUser.name
                 let userEmail = currentUser.email
                 let userPhoneNumber = currentUser.phoneNumber
@@ -96,19 +96,6 @@ class MakeReportViewController: UIViewController {
                 try await self.createReport(report: report, userId: currentUserDocId)
             }
         }
-    }
-    
-    func getUser(for uid: String) async throws -> User {
-        
-        
-        let db = Firestore.firestore()
-        
-        let document = db.collection("users").document(uid)
-        let snapshot = try await document.getDocument()
-        
-        let user = try snapshot.data(as: User.self)
-        
-        return user
     }
 
 }
