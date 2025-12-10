@@ -189,9 +189,29 @@ class ReportDetailsViewController: UIViewController {
     }
     
     @objc func onWithdrawTapped(){
-        withdrawReport()
-        reportsDetails.configureForViewer()
-        navigationController?.popViewController(animated: true)
+        let alert = UIAlertController(
+            title: "Are you sure?",
+            message: "Are you sure you want to withdraw your claim? This will make this report available for other rehabbers.",
+            preferredStyle: .alert
+        )
+        
+        let cancelAction = UIAlertAction(title: "Keep Claim", style: .cancel, handler: nil)
+        
+        let withdrawAction = UIAlertAction(title: "Withdraw", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            
+            // Optional: Show loading indicator
+            // self.showActivityIndicator()
+            
+            self.withdrawReport()
+            self.reportsDetails.configureForViewer()
+            self.navigationController?.popViewController(animated: true)
+        }
+        
+        alert.addAction(cancelAction)
+        alert.addAction(withdrawAction)
+        
+        present(alert, animated: true)
     }
     
     func updateUIForNextAction() {
