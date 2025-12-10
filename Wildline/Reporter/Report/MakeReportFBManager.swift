@@ -35,7 +35,9 @@ extension MakeReportViewController {
             
             print("report added with id: \(result.documentID)")
             
-            
+            let newReport = try await Utilities.getReport(for: result.documentID)
+            redirectToReportDetails(report: newReport)
+
         }catch{
             print("Error adding report!")
         }
@@ -74,5 +76,12 @@ extension MakeReportViewController {
         }catch{
             print("Error adding report!")
         }
+    }
+    
+    func redirectToReportDetails(report: Report) {
+        let vc = ReportDetailsViewController()
+        
+        vc.reportInfo = report
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

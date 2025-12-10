@@ -40,6 +40,17 @@ class Utilities{
         return user
     }
     
+    static func getReport(for rid: String) async throws -> Report {
+        let db = Firestore.firestore()
+        
+        let document = db.collection("reports").document(rid)
+        let snapshot = try await document.getDocument()
+        
+        let report = try snapshot.data(as: Report.self)
+        
+        return report
+    }
+    
     static func relativeString(from date: Date) -> String {
         let fmt = RelativeDateTimeFormatter()
         fmt.unitsStyle = .short
