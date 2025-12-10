@@ -27,7 +27,9 @@ class AllReportsViewController: UIViewController {
         
         listener?.remove()
         
-        listener = self.db.collection("reports").addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
+        listener = self.db.collection("reports")
+            .whereField("adminName", in: [NSNull(), ""])
+            .addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
                     if let error = error {
                         print("Error fetching reports: \(error)")
                         return
@@ -71,7 +73,7 @@ class AllReportsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "All Claims"
+        title = "Unclaimed Reports"
         
         allReportsView.reportsTable.register(AllReportsTableViewCell.self, forCellReuseIdentifier: AllReportsTableViewCell.identifier)
         allReportsView.reportsTable.delegate = self

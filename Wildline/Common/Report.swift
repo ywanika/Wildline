@@ -17,10 +17,10 @@ struct Report: Codable {
     var description: String?
     var location: GeoPoint
     var createdAt: Date
-    var adminName: String?
-    var adminPhoneNumber: String?
+    var adminName: String
+    var adminPhoneNumber: String
     
-    init(title: String, createdBy: String, userEmail: String, userPhoneNumber: String, description: String? = nil, location: GeoPoint, createdAt: Date, adminName: String? = nil, adminPhoneNumber: String? = nil) {
+    init(title: String, createdBy: String, userEmail: String, userPhoneNumber: String, description: String? = nil, location: GeoPoint, createdAt: Date, adminName: String, adminPhoneNumber: String) {
         self.title = title
         self.createdBy = createdBy
         self.userEmail = userEmail

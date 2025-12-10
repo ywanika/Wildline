@@ -79,6 +79,17 @@ class MakeReportViewController: UIViewController, CLLocationManagerDelegate {
                     location: locationGeoPoint,
                     createdAt: createdAt
                 )
+                if (!isValidReport(createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber, title: title ?? "", description: description ?? "", location: location ?? "", createdAt: createdAt)) {
+                                    showAlert(on: self, title: "Alert!", message: "Make sure you fill in all the required fields.")
+                                    return
+                                }
+            
+                guard let coords = Utilities.parseLocation(location: location ?? "") else {
+                                   showAlert(on: self, title: "Alert!", message: "Location must be formatted as 'latitude/longitude'.")
+                                   return
+                               }
+
+                               let report = Report(title: title!, createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber,description: description, location: coords, createdAt: createdAt, adminName: "", adminPhoneNumber: "")
                 
                 try await self.createReport(report: report, userId: currentUserDocId)
             }

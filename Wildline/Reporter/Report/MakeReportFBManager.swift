@@ -24,6 +24,12 @@ extension MakeReportViewController {
                 
             }
             
+            var status = Status(type: UpdateTypes.Created, message: "Report Created", createdAt: Date())
+            try db.collection("reports")
+                .document(result.documentID)
+                .collection("status")
+                .addDocument(from: status)
+            
             // if successful, then add to user's collection of reportIds
             addReportToUser(reportId: result.documentID, userId: userId)
             

@@ -142,7 +142,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         reportDetailsViewController.report = reports[indexPath.row]
         
         navigationController?.pushViewController(reportDetailsViewController, animated: true)
-        
+        reportDetailsViewController.reportInfo = reports[indexPath.row]
         
         //        Task {
         //            do {

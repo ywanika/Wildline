@@ -54,12 +54,12 @@ class ViewController: UITabBarController, UITabBarControllerDelegate {
         
         let tabRehabAllClaims = UINavigationController(rootViewController: AllReportsViewController())
         let tabRehabAllClaimsItem = UITabBarItem(
-            title: "All Claims",
+            title: "Unclaimed Reports",
             image: UIImage(systemName: "long.text.page.and.pencil")?.withRenderingMode(.alwaysOriginal),
             selectedImage: UIImage(systemName: "long.text.page.and.pencil.fill")
         )
         tabRehabAllClaims.tabBarItem = tabRehabAllClaimsItem
-        tabRehabAllClaims.title = "All Claims"
+        tabRehabAllClaims.title = "Unclaimed Reports"
         
         
         //MARK: setting up this view controller as the Tab Bar Controller...

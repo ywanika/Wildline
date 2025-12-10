@@ -12,9 +12,11 @@ enum Roles: String, Codable {
 
 enum UpdateTypes: String, Codable {
     case Created = "Created"
-    case Clamied = "Claimed"
+    case Claimed = "Claimed"
     case OTW = "OTW"
     case Arrived = "Arrived"
     case Cancelled = "Cancelled"
     case Finished = "Finished"
 }
+
+let updateOrder: [UpdateTypes] = [UpdateTypes.Created, UpdateTypes.Claimed, UpdateTypes.OTW, UpdateTypes.Arrived, UpdateTypes.Finished]
