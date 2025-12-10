@@ -11,16 +11,12 @@ let ACCENT_COLOR = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
 
 class ReportDetailsView: UIView {
     
-    var backButton: UIButton!
     var titleLabel: UILabel!
     var updateButton: UIButton!
     
     var reporterInfoLabel: UILabel!
     var reporterNameLabel: UILabel!
     var reporterPhoneLabel: UILabel!
-    
-    var imageView: UIImageView!
-    var imageLabel: UILabel!
     
     var descriptionLabel: UILabel!
     var descriptionTextView: UITextView!
@@ -43,7 +39,6 @@ class ReportDetailsView: UIView {
         setupScrollView()
         setupHeader()
         setupReporterInfo()
-        setupImage()
         setupDescription()
         setupShowLessButton()
         setupTimeline()
@@ -63,14 +58,6 @@ class ReportDetailsView: UIView {
     }
     
     func setupHeader() {
-        backButton = UIButton(type: .system)
-        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        backButton.tintColor = ACCENT_COLOR
-        backButton.backgroundColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 0.1)
-        backButton.layer.cornerRadius = 22
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(backButton)
-        
         titleLabel = UILabel()
         titleLabel.text = "Report Title"
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
@@ -113,25 +100,6 @@ class ReportDetailsView: UIView {
         reporterPhoneLabel.font = .preferredFont(forTextStyle: .body)
         reporterPhoneLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(reporterPhoneLabel)
-    }
-    
-    func setupImage() {
-        imageLabel = UILabel()
-        imageLabel.text = "Image"
-        imageLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        imageLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
-        imageLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(imageLabel)
-        
-        imageView = UIImageView()
-        imageView.backgroundColor = UIColor(red: 0.9, green: 0.95, blue: 0.9, alpha: 1.0)
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 12
-        imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 0.3).cgColor
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(imageView)
     }
     
     func setupDescription() {
@@ -237,18 +205,13 @@ class ReportDetailsView: UIView {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            backButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            backButton.widthAnchor.constraint(equalToConstant: 44),
-            backButton.heightAnchor.constraint(equalToConstant: 44),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
-            titleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 8),
-            
-            updateButton.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
+            updateButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
             updateButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            reporterInfoLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 16),
+            reporterInfoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
             reporterInfoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             reporterNameLabel.topAnchor.constraint(equalTo: reporterInfoLabel.bottomAnchor, constant: 4),
@@ -257,15 +220,7 @@ class ReportDetailsView: UIView {
             reporterPhoneLabel.topAnchor.constraint(equalTo: reporterNameLabel.bottomAnchor, constant: 2),
             reporterPhoneLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
-            imageLabel.topAnchor.constraint(equalTo: reporterPhoneLabel.bottomAnchor, constant: 16),
-            imageLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            imageView.topAnchor.constraint(equalTo: imageLabel.bottomAnchor, constant: 4),
-            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            imageView.widthAnchor.constraint(equalToConstant: 80),
-            imageView.heightAnchor.constraint(equalToConstant: 80),
-            
-            descriptionLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
+            descriptionLabel.topAnchor.constraint(equalTo: reporterPhoneLabel.bottomAnchor, constant: 16),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             

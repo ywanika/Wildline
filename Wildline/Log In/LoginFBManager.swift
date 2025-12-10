@@ -54,12 +54,8 @@ extension LoginViewController {
            print("User not found")
            return
         }
-        print(Date())
-        print(document.documentID)
-        print(document.data()["role"] as! String)
+        
         UserToken.shared.saveUserId(document.documentID)
         UserToken.shared.saveUserRole(document.data()["role"] as! String)
-        print(UserToken.shared.getUserId())
-        print(UserToken.shared.getUserRole())
     }
 }
