@@ -39,6 +39,7 @@ class QuickLookViewController: UIViewController {
     @objc func onClaimReportButtonTapped() {
         claimReport()
         quickLookView.claimReportButton.isHidden = true
+        navigationController?.popViewController(animated: true)
     }
 
 }

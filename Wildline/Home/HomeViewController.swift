@@ -127,7 +127,6 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
 
-    // route to chat with friend
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //        tableView.deselectRow(at: indexPath, animated: true)
         //        print(unorderedChatCellArray[indexPath.row].friendUid)
@@ -139,7 +138,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         
         let reportDetailsViewController = ReportDetailsViewController()
         navigationController?.pushViewController(reportDetailsViewController, animated: true)
-        
+        reportDetailsViewController.reportInfo = reports[indexPath.row]
         
         //        Task {
         //            do {

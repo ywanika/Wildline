@@ -21,8 +21,6 @@ class ReportDetailsView: UIView {
     var descriptionLabel: UILabel!
     var descriptionTextView: UITextView!
     
-    var showLessButton: UIButton!
-    
     var timelineLabel: UILabel!
     var timelineStackView: UIStackView!
     
@@ -40,7 +38,6 @@ class ReportDetailsView: UIView {
         setupHeader()
         setupReporterInfo()
         setupDescription()
-        setupShowLessButton()
         setupTimeline()
         setupActionButton()
         
@@ -62,7 +59,7 @@ class ReportDetailsView: UIView {
         contentView.addSubview(titleLabel)
         
         updateButton = UIButton(type: .system)
-        updateButton.setTitle("Update", for: .normal)
+        updateButton.setTitle("Delete", for: .normal)
         updateButton.setTitleColor(.white, for: .normal)
         updateButton.backgroundColor = ACCENT_COLOR
         updateButton.layer.borderWidth = 0
@@ -118,14 +115,6 @@ class ReportDetailsView: UIView {
         contentView.addSubview(descriptionTextView)
     }
     
-    func setupShowLessButton() {
-        showLessButton = UIButton(type: .system)
-        showLessButton.setTitle("^ show less", for: .normal)
-        showLessButton.setTitleColor(ACCENT_COLOR, for: .normal)
-        showLessButton.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(showLessButton)
-    }
-    
     func setupTimeline() {
         timelineLabel = UILabel()
         timelineLabel.text = "will implement later - Ciara"
@@ -142,39 +131,24 @@ class ReportDetailsView: UIView {
     }
     
     func setupActionButton() {
-        actionButton = UIButton(type: .system)
-        actionButton.setTitle("Action", for: .normal)
-        actionButton.setTitleColor(ACCENT_COLOR, for: .normal)
-        actionButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        actionButton.layer.borderWidth = 2.5
-        actionButton.layer.borderColor = ACCENT_COLOR.cgColor
-        actionButton.layer.cornerRadius = 14
-        actionButton.contentEdgeInsets = UIEdgeInsets(top: 14, left: 0, bottom: 14, right: 0)
-        actionButton.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.15).cgColor
-        actionButton.layer.shadowOffset = CGSize(width: 0, height: 3)
-        actionButton.layer.shadowRadius = 6
-        actionButton.layer.shadowOpacity = 1.0
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        actionButton = createStyledPrimaryButton(title: "action")
         contentView.addSubview(actionButton)
     }
     
-    func configureForRehabber() {
-        actionButton.setTitle("Withdraw Claim", for: .normal)
-        actionButton.setTitleColor(.systemPurple, for: .normal)
-        actionButton.layer.borderColor = UIColor.systemPurple.cgColor
+    func configureForRehabber(nextActionTextLabel: String) {
+        actionButton.isHidden = false
+        actionButton.setTitle(nextActionTextLabel, for: .normal)
+        
+        updateButton.setTitle("Withdraw Claim", for: .normal)
         updateButton.isHidden = false
     }
     
-    func configureForReporter(isClaimed: Bool) {
-        if isClaimed {
-            actionButton.setTitle("Cancel Report", for: .normal)
-            actionButton.setTitleColor(.systemRed, for: .normal)
-            actionButton.layer.borderColor = UIColor.systemRed.cgColor
-        } else {
-            actionButton.setTitle("Delete Report", for: .normal)
-            actionButton.setTitleColor(.systemRed, for: .normal)
-            actionButton.layer.borderColor = UIColor.systemRed.cgColor
-        }
+    func configureForReporter() {
+        // TODO
+//        actionButton.setTitle("Delete Report", for: .normal)
+//        actionButton.setTitleColor(.systemRed, for: .normal)
+//        actionButton.layer.borderColor = UIColor.systemRed.cgColor
+        actionButton.isHidden = true
         updateButton.isHidden = true
     }
     
@@ -224,10 +198,7 @@ class ReportDetailsView: UIView {
             descriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            showLessButton.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 4),
-            showLessButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            
-            timelineLabel.topAnchor.constraint(equalTo: showLessButton.bottomAnchor, constant: 24),
+            timelineLabel.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 24),
             timelineLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             timelineStackView.topAnchor.constraint(equalTo: timelineLabel.bottomAnchor, constant: 12),

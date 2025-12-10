@@ -41,7 +41,7 @@ extension QuickLookViewController {
                 ])
                 
                 // MARK: Adding status to report
-                var status = Status(type: UpdateTypes.Clamied, message: "\(rehabber.name) has claimed this report!", createdAt: Date())
+                var status = Status(type: UpdateTypes.Claimed, message: "\(rehabber.name) has claimed this report!", createdAt: Date())
                 try db.collection("reports")
                     .document(reportId)
                     .collection("status")
