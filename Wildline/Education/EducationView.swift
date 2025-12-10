@@ -88,35 +88,21 @@ class EducationView: UIView {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(descriptionLabel)
         
-        let readMoreButton = UIButton(type: .system)
-        readMoreButton.setTitle("Read More →", for: .normal)
-        readMoreButton.setTitleColor(UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0), for: .normal)
-        readMoreButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        readMoreButton.contentHorizontalAlignment = .left
-        readMoreButton.translatesAutoresizingMaskIntoConstraints = false
-        cardView.addSubview(readMoreButton)
-        
         NSLayoutConstraint.activate([
             accentBorder.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            accentBorder.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 20),
-            accentBorder.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -20),
+            accentBorder.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
+            accentBorder.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
             accentBorder.widthAnchor.constraint(equalToConstant: 4),
             
-            titleLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: accentBorder.trailingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -20),
+            titleLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: accentBorder.trailingAnchor, constant: 12),
+            titleLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
             
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -20),
-            
-            readMoreButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 12),
-            readMoreButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            readMoreButton.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -20),
-            readMoreButton.heightAnchor.constraint(equalToConstant: 30),
+            descriptionLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+            descriptionLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16)
         ])
-        
-        cardView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100).isActive = true
         
         return cardView
     }
