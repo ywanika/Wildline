@@ -55,7 +55,7 @@ class MakeReportViewController: UIViewController {
                                    return
                                }
 
-                               let report = Report(title: title!, createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber,description: description, location: coords, createdAt: createdAt)
+                               let report = Report(title: title!, createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber,description: description, location: coords, createdAt: createdAt, adminName: "", adminPhoneNumber: "")
                 
                 try await self.createReport(report: report, userId: currentUserDocId)
             }

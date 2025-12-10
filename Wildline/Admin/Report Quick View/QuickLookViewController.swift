@@ -23,7 +23,7 @@ class QuickLookViewController: UIViewController {
         quickLookView.descriptionLabel.text = reportInfo.description
         quickLookView.reporterNameLabel.text = reportInfo.createdBy
         
-        if reportInfo.adminName == nil || reportInfo.adminName?.isEmpty == true {
+        if reportInfo.adminName.isEmpty == true || reportInfo.adminName == "" {
             quickLookView.claimReportButton.isHidden = false
             quickLookView.claimReportButton.addTarget(self, action: #selector(onClaimReportButtonTapped), for: .touchUpInside)
         } else {
