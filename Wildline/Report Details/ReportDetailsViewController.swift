@@ -16,68 +16,112 @@ class ReportDetailsViewController: UIViewController {
     var currentUserRole = UserToken.shared.getUserRole()
     var nextActionLabel: UpdateTypes?
     let db = Firestore.firestore()
-    var statusListener: ListenerRegistration?
+    var latestStatusListener: ListenerRegistration?
+    var statusesListener: ListenerRegistration?
+    var statuses = [Status]()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        statusListener?.remove()
+        latestStatusListener?.remove()
+        statusesListener?.remove()
         
         guard let reportId = reportInfo.id else {
             print("Report ID is nil")
             return
         }
         
-        statusListener = self.db.collection("reports")
-            .document(reportId)
-            .collection("status")
-            .order(by: "createdAt", descending: true)
-            .limit(to: 1)
-            .addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
-                if let error = error {
-                    print("Error fetching status: \(error)")
-                    return
-                }
-                
-                guard let latestStatusDoc = querySnapshot?.documents.first else {
-                    print("No status found")
-                    self.nextActionLabel = UpdateTypes.Cancelled
-                    DispatchQueue.main.async {
-                        self.updateUIForNextAction()
+        if currentUserRole == "admin" {
+            latestStatusListener = self.db.collection("reports")
+                .document(reportId)
+                .collection("status")
+                .order(by: "createdAt", descending: true)
+                .limit(to: 1)
+                .addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
+                    if let error = error {
+                        print("Error fetching status: \(error)")
+                        return
                     }
-                    return
-                }
-                
-                do {
-                    let latestStatus = try latestStatusDoc.data(as: Status.self)
-                    print("current status: \(latestStatus.type.rawValue)")
                     
-                    // MARK: Get next status type
-                    if let currentIndex = updateOrder.firstIndex(of: latestStatus.type) {
-                        let nextIndex = currentIndex + 1
-                        if nextIndex < updateOrder.count {
-                            self.nextActionLabel = updateOrder[nextIndex]
-                            print("Next action: \(self.nextActionLabel?.rawValue ?? "none")")
-                        } else {
-                            print("Report is already at final status")
+                    guard let latestStatusDoc = querySnapshot?.documents.first else {
+                        print("No status found")
+                        self.nextActionLabel = UpdateTypes.Cancelled
+                        DispatchQueue.main.async {
+                            self.updateUIForNextAction()
+                        }
+                        return
+                    }
+                    
+                    do {
+                        let latestStatus = try latestStatusDoc.data(as: Status.self)
+                        print("current status: \(latestStatus.type.rawValue)")
+                        
+                        // MARK: Get next status type
+                        if let currentIndex = updateOrder.firstIndex(of: latestStatus.type) {
+                            let nextIndex = currentIndex + 1
+                            if nextIndex < updateOrder.count {
+                                self.nextActionLabel = updateOrder[nextIndex]
+                                print("Next action: \(self.nextActionLabel?.rawValue ?? "none")")
+                            } else {
+                                print("Report is already at final status")
+                                self.nextActionLabel = nil
+                            }
+                        } else if latestStatus.type == UpdateTypes.Cancelled {
+                            self.nextActionLabel = nil
+                        } else{
+                            print("Current status type not found in update order")
                             self.nextActionLabel = nil
                         }
-                    } else if latestStatus.type == UpdateTypes.Cancelled {
-                        self.nextActionLabel = nil
-                    } else{
-                        print("Current status type not found in update order")
-                        self.nextActionLabel = nil
+                        
+                        DispatchQueue.main.async {
+                            self.updateUIForNextAction()
+                        }
+                        
+                    } catch {
+                        print("Error decoding status: \(error)")
                     }
-                    
-                    DispatchQueue.main.async {
-                        self.updateUIForNextAction()
-                    }
-                    
-                } catch {
-                    print("Error decoding status: \(error)")
+                })
+        }
+        
+        // add listener for all statuses
+        statusesListener = self.db.collection("reports")
+            .document(reportId)
+            .collection("status")
+            .addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
+                if let error = error {
+                    print("Error fetching statuses: \(error)")
+                    return
                 }
+                
+                guard let documents = querySnapshot?.documents else {
+                    print("No documents found")
+                    return
+                }
+                
+                self.statuses = [] as [Status]
+                
+                for document in documents {
+                    do {
+                        let status = try document.data(as: Status.self)
+                        self.statuses.append(status)
+                    } catch {
+                        print("Error decoding status: \(error)")
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.populateTimeline(statuses: self.statuses)
+                }
+                
+                print("Number of statuses: \(self.statuses.count)")
             })
+        
+        DispatchQueue.main.async {
+            if self.currentUserRole == "user" {                self.reportsDetails.configureForReporter()
+            }
+        }
     }
+                                 
     
     override func loadView() {
         view = reportsDetails
@@ -108,6 +152,7 @@ class ReportDetailsViewController: UIViewController {
                     case nil: // hits when no more updates
                         reportsDetails.configureForRehabber(nextActionTextLabel: "")
                         reportsDetails.actionButton.isHidden = true
+                        reportsDetails.updateButton.isHidden = true
                     default:
                         reportsDetails.configureForRehabber(nextActionTextLabel: "Send Update: \(nextActionLabel?.rawValue ?? "")")
                         reportsDetails.actionButton.addTarget(self, action: #selector(onUpdateButtonTapped), for: .touchUpInside)
@@ -118,7 +163,10 @@ class ReportDetailsViewController: UIViewController {
                 }
             }
         } else if currentUserRole == "user" {
+            print("is user")
             reportsDetails.configureForReporter()
+//                    reportsDetails.updateButton.isHidden = true
+//                    reportsDetails.actionButton.isHidden = true
             //TODO give users delete option
         } else {
             showAlert(on: self, title: "No User Found", message: "")
@@ -127,7 +175,8 @@ class ReportDetailsViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        statusListener?.remove()
+        latestStatusListener?.remove()
+        statusesListener?.remove()
     }
     
     @objc func onUpdateButtonTapped(){
@@ -152,6 +201,28 @@ class ReportDetailsViewController: UIViewController {
         default:
             reportsDetails.configureForRehabber(nextActionTextLabel: "Send Update: \(nextActionLabel?.rawValue ?? "")")
             reportsDetails.actionButton.addTarget(self, action: #selector(onUpdateButtonTapped), for: .touchUpInside)
+        }
+    }
+    
+    func populateTimeline(statuses: [Status]?) {
+        // Clear existing timeline
+        print("Populating timeline now")
+        reportsDetails.timelineStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        // If no statuses, add a default one
+        guard let statuses = statuses, !statuses.isEmpty else {
+            return
+        }
+        
+        // Sort statuses by date (most recent first)
+        let sortedStatuses = statuses.sorted { $0.createdAt > $1.createdAt }
+        print("sortedStatuses.count: \(sortedStatuses.count)")
+        
+        // Add each status to timeline
+        for (index, status) in sortedStatuses.enumerated() {
+            let isLastItem = (index == sortedStatuses.count - 1)
+            let eventView = TimelineEventView(status: status, isLastItem: isLastItem)
+            reportsDetails.timelineStackView.addArrangedSubview(eventView)
         }
     }
     
