@@ -14,7 +14,6 @@ class QuickLookView: UIView {
     
     var reporterNameLabel: UILabel!
     var reporterPictureButton: UIButton!
-    var imageView: UIImageView!
     var titleLabel: UILabel!
     var locationLabel: UILabel!
     var descriptionLabel: UILabel!
@@ -30,7 +29,6 @@ class QuickLookView: UIView {
         setupContentView()
         setupReporterNameLabel()
         setupReporterPictureButton()
-        setupImageView()
         setupTitleLabel()
         setupLocationLabel()
         setupDescriptionLabel()
@@ -70,15 +68,6 @@ class QuickLookView: UIView {
         reporterPictureButton.imageView?.contentMode = .scaleAspectFit
         reporterPictureButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(reporterPictureButton)
-    }
-    
-    func setupImageView() {
-        imageView = UIImageView()
-        imageView.image = UIImage(systemName: "photo")
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .systemGray
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(imageView)
     }
     
     func setupTitleLabel() {
@@ -141,13 +130,7 @@ class QuickLookView: UIView {
             reporterNameLabel.trailingAnchor.constraint(equalTo: reporterPictureButton.leadingAnchor, constant: -8),
             reporterNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 20),
             
-            imageView.topAnchor.constraint(equalTo: reporterPictureButton.bottomAnchor, constant: 20),
-            imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalToConstant: 200),
-            
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: reporterNameLabel.bottomAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
