@@ -1,19 +1,22 @@
 //
-//  MakeReportViewController.swift
-//  Wildline
+//  MakeReportViewController.swift
+//  Wildline
 //
-//  Created by Anika Sharma on 11/15/25.
+//  Created by Anika Sharma on 11/15/25.
 //
 
 import UIKit
 import PhotosUI
 import FirebaseFirestore
+import MapKit
+import CoreLocation
 
-class MakeReportViewController: UIViewController {
+class MakeReportViewController: UIViewController, CLLocationManagerDelegate {
     var makeReportView = MakeReportView()
     var pickedImage:UIImage?
     var currentUser: User!
-    
+    var locationManager: CLLocationManager?
+
     override func loadView(){
         view = makeReportView
     }
@@ -23,7 +26,18 @@ class MakeReportViewController: UIViewController {
         title = "Make a Report"
         makeReportView.buttonSelectPhoto.menu = getMenuImagePicker()
         
+        makeReportView.delegate = self
+        setupLocationManager()
+        
         makeReportView.sendReportButton.addTarget(self, action: #selector(onSendTapped), for: .touchUpInside)
+    }
+    
+    func setupLocationManager() {
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+        
+        locationManager?.requestWhenInUseAuthorization()
     }
     
     func getMenuImagePicker() -> UIMenu{
@@ -66,6 +80,13 @@ class MakeReportViewController: UIViewController {
             return
         }
         
+        guard let latitude = makeReportView.selectedLatitude,
+              let longitude = makeReportView.selectedLongitude else {
+            // Display an alert if location is not set
+            print("Location required!")
+            return
+        }
+        
         Task {
             do {
                 let currentUser = try await getUser(for:currentUserDocId)
@@ -78,8 +99,17 @@ class MakeReportViewController: UIViewController {
                 let createdAt = Date()
                 
                 
-                // TODO: change geopoint to take in actual location text info
-                let report = Report(title: title!, createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber,description: description, location: GeoPoint(latitude: 0, longitude: 0), createdAt: createdAt)
+                let locationGeoPoint = GeoPoint(latitude: latitude, longitude: longitude)
+                
+                let report = Report(
+                    title: title!,
+                    createdBy: createdBy,
+                    userEmail: userEmail,
+                    userPhoneNumber: userPhoneNumber,
+                    description: description,
+                    location: locationGeoPoint,
+                    createdAt: createdAt
+                )
                 
                 try await self.createReport(report: report)
             }
@@ -98,7 +128,39 @@ class MakeReportViewController: UIViewController {
         
         return user
     }
+    
+    // MARK: - CoreLocation Delegate Methods
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
+            manager.requestLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else { return }
+        
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] (placemarks, error) in
+            var addressString: String? = nil
+            if let placemark = placemarks?.first {
+                addressString = [placemark.thoroughfare, placemark.locality, placemark.administrativeArea]
+                    .compactMap { $0 }
+                    .joined(separator: ", ")
+            }
+            
+            self?.makeReportView.updateLocationDisplay(
+                latitude: location.coordinate.latitude,
+                longitude: location.coordinate.longitude,
+                address: addressString
+            )
+        }
+        manager.stopUpdatingLocation()
+    }
 
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Error getting location: \(error)")
+        // Add alert to inform user that GPS failed if desired
+    }
 }
 
 //MARK: adopting required protocols for UIImagePicker...
@@ -145,3 +207,37 @@ extension MakeReportViewController:PHPickerViewControllerDelegate{
     }
 }
 
+// MARK: - LocationSelectionDelegate Implementation
+extension MakeReportViewController: LocationSelectionDelegate {
+
+    func requestCurrentGPSLocation() {
+        let status = locationManager?.authorizationStatus
+        
+        switch status {
+        case .notDetermined:
+            locationManager?.requestWhenInUseAuthorization()
+        case .denied, .restricted:
+            print("Location access denied. Prompting user to enable in settings.")
+        case .authorizedWhenInUse, .authorizedAlways:
+            locationManager?.requestLocation()
+        case .none:
+            break
+        @unknown default:
+            break
+        }
+    }
+    
+    func mapButtonTapped() {
+        let mapVC = MapViewController()
+        mapVC.locationDelegate = self
+        navigationController?.pushViewController(mapVC, animated: true)
+    }
+
+    func didSelectLocation(latitude: Double, longitude: Double, address: String?) {
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        
+        makeReportView.updateLocationDisplay(latitude: latitude, longitude: longitude, address: address)
+
+        makeReportView.updateMapPreview(coordinate: coordinate)
+    }
+}
