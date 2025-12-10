@@ -8,6 +8,7 @@
 import UIKit
 
 class AllReportsTableViewCell: UITableViewCell {
+    static let identifier = "AllReportsTableViewCell"
 
     var wrapperCellView: UIView!
     var titleLabel: UILabel!
