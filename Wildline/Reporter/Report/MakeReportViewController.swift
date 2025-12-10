@@ -93,6 +93,7 @@ class MakeReportViewController: UIViewController, CLLocationManagerDelegate {
                     }
             
                 try await self.createReport(report: report, userId: currentUserDocId)
+                showAlert(on: self, title: "Report Created!", message: "Your report has been successfully created")
             }
         }
     }
