@@ -136,7 +136,7 @@ class ReportDetailsViewController: UIViewController {
         
         reportsDetails.titleLabel.text = reportInfo.title
         reportsDetails.reporterNameLabel.text = reportInfo.createdBy
-        reportsDetails.reporterPhoneLabel.text = reportInfo.userPhoneNumber
+        reportsDetails.reporterPhoneLabel.text = Utilities.formatPhoneNumber(from: reportInfo.userPhoneNumber)   
         reportsDetails.descriptionTextView.text = reportInfo.description
         
         if currentUserRole == "admin" {
@@ -227,5 +227,4 @@ class ReportDetailsViewController: UIViewController {
             reportsDetails.timelineStackView.addArrangedSubview(eventView)
         }
     }
-    
 }

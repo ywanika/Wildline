@@ -56,4 +56,13 @@ class Utilities{
         fmt.unitsStyle = .short
         return fmt.localizedString(for: date, relativeTo: Date())
     }
+    
+    static func formatPhoneNumber(from num: String) -> String {
+        var firstGroup = num.prefix(6)
+        var firstNums = firstGroup.prefix(3)
+        var secondNums = firstGroup.suffix(3)
+        var finalNums = num.suffix(4)
+        
+        return "(\(firstNums))-\(secondNums)-\(finalNums)"
+    }
 }
