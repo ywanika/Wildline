@@ -123,7 +123,7 @@ class RegisterViewController: UIViewController {
     }
     
     func validatePassword(_ password: String) -> Bool {
-        guard password.count >= 8, let _ = Int(password) else {
+        guard password.count >= 8 else {
             showAlert(on: self, title: "Error!", message: "Password must be at least 8 characters")
             return false
         }
