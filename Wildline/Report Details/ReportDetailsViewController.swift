@@ -12,7 +12,7 @@ import FirebaseFirestore
 class ReportDetailsViewController: UIViewController {
 
     let reportsDetails = ReportDetailsView()
-    var report: Report? = nil
+//    var report: Report? = nil
     var reportInfo: Report!
     var currentUserRole = UserToken.shared.getUserRole()
     var nextActionLabel: UpdateTypes?

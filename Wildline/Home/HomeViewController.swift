@@ -137,12 +137,17 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
             return
         }
         
+        // Check if index is valid
+        guard indexPath.row < reports.count else {
+            print("Invalid index: \(indexPath.row), reports count: \(reports.count)")
+            return
+        }
+        
         var reportDetailsViewController = ReportDetailsViewController()
         
-        reportDetailsViewController.report = reports[indexPath.row]
+        reportDetailsViewController.reportInfo = reports[indexPath.row]
         
         navigationController?.pushViewController(reportDetailsViewController, animated: true)
-        reportDetailsViewController.reportInfo = reports[indexPath.row]
         
         //        Task {
         //            do {
