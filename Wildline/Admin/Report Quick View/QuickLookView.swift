@@ -110,12 +110,8 @@ class QuickLookView: UIView {
     }
     
     func setupClaimReportButton() {
-        claimReportButton = UIButton(type: .system)
-        claimReportButton.translatesAutoresizingMaskIntoConstraints = false
-        claimReportButton.setTitle("Claim Report", for: .normal)
-        claimReportButton.backgroundColor = .systemBlue
-        claimReportButton.setTitleColor(.white, for: .normal)
-        claimReportButton.layer.cornerRadius = 8
+        claimReportButton = createStyledSecondaryButton(title: "Claim Report")
+        claimReportButton.isHidden = true
         contentView.addSubview(claimReportButton)
     }
     
