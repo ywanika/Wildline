@@ -69,4 +69,35 @@ extension UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
+    
+    func createStyledTitleLabel(title: String) -> UILabel{
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        return titleLabel
+    }
+    
+    func createStyledSubtitle(subtitle: String) -> UILabel{
+        let subtitleLabel = UILabel()
+        subtitleLabel.text = subtitle
+        subtitleLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        subtitleLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        return subtitleLabel
+    }
+    
+    func createStyledTextView(message: String) -> UITextView{
+        let descriptionTextView = UITextView()
+        descriptionTextView.font = .preferredFont(forTextStyle: .body)
+        descriptionTextView.isEditable = false
+        descriptionTextView.isScrollEnabled = false
+        descriptionTextView.backgroundColor = UIColor(red: 0.98, green: 0.99, blue: 0.98, alpha: 1.0)
+        descriptionTextView.layer.cornerRadius = 8
+        descriptionTextView.textContainer.lineFragmentPadding = 0
+        descriptionTextView.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
+        return descriptionTextView
+    }
 }

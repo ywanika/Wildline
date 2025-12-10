@@ -20,8 +20,8 @@ class QuickLookViewController: UIViewController {
         view = quickLookView
         
         quickLookView.titleLabel.text = reportInfo.title
-        quickLookView.descriptionLabel.text = reportInfo.description
-        quickLookView.reporterNameLabel.text = reportInfo.createdBy
+        quickLookView.descriptionTextView.text = reportInfo.description
+        quickLookView.reporterNameLabel.text = "Reported By: \(reportInfo.createdBy)"
         
         if reportInfo.adminName.isEmpty == true || reportInfo.adminName == "" {
             quickLookView.claimReportButton.isHidden = false

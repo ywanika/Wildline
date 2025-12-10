@@ -58,11 +58,7 @@ class ReportDetailsView: UIView {
     }
     
     func setupHeader() {
-        titleLabel = UILabel()
-        titleLabel.text = "Report Title"
-        titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        titleLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel = createStyledTitleLabel(title: "Title")
         contentView.addSubview(titleLabel)
         
         updateButton = UIButton(type: .system)
