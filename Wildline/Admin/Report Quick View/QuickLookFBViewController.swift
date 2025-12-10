@@ -47,7 +47,24 @@ extension QuickLookViewController {
                     .collection("status")
                     .addDocument(from: status)
                 
-                // MARK: Adding rehabber to report
+                // MARK: Adding report to rehaber
+                let reportRef = ReportRef(reportId: reportId)
+                
+                let userReports = db.collection("users").document(myUserId).collection("reports")
+                
+                do{
+                    let result = try userReports.addDocument(from: reportRef) {error in
+                        if let error = error {
+                            return
+                        }
+                        
+                    }
+                    
+                    print("reportRef added with id: \(result.documentID)")
+                    
+                }catch{
+                    print("Error adding report!")
+                }
                 
                 print("Report claimed successfully")
                 
