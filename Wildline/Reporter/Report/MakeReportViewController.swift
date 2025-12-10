@@ -13,6 +13,7 @@ class MakeReportViewController: UIViewController {
     var makeReportView = MakeReportView()
     var pickedImage:UIImage?
     var currentUser: User!
+    let db = Firestore.firestore()
     
     override func loadView(){
         view = makeReportView
@@ -68,6 +69,9 @@ class MakeReportViewController: UIViewController {
         
         Task {
             do {
+//                guard let currentUser = try await getUser(for:currentUserDocId) else {
+//                    showAlert(on: self, title: "Error", message: "Could not fetch user data.")
+//                }
                 let currentUser = try await getUser(for:currentUserDocId)
                 let createdBy = currentUser.name
                 let userEmail = currentUser.email
@@ -89,7 +93,7 @@ class MakeReportViewController: UIViewController {
 
                                let report = Report(title: title!, createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber,description: description, location: coords, createdAt: createdAt)
                 
-                try await self.createReport(report: report)
+                try await self.createReport(report: report, userId: currentUserDocId)
             }
         }
     }
