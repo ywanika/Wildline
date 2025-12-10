@@ -9,6 +9,7 @@ import UIKit
 
 class HomeView: UIView {
     
+    var segmentedControl: UISegmentedControl!
     var reportsTable: UITableView!
     
     override init(frame: CGRect) {
@@ -16,9 +17,16 @@ class HomeView: UIView {
         // Soft gradient background matching login
         self.backgroundColor = UIColor(red: 0.95, green: 0.98, blue: 0.95, alpha: 1.0)
         
+        setupSegmentedControl()
         setupReportsTable()
-        
         initConstraints()
+    }
+    
+    func setupSegmentedControl() {
+        segmentedControl = UISegmentedControl(items: ["Open", "Closed"])
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(segmentedControl)
     }
     
     func setupReportsTable() {
@@ -47,7 +55,11 @@ class HomeView: UIView {
     
     func initConstraints(){
         NSLayoutConstraint.activate([
-            reportsTable.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 32),
+            segmentedControl.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 12),
+            segmentedControl.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            segmentedControl.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            
+            reportsTable.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 12),
             reportsTable.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 8),
             reportsTable.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -8),
             reportsTable.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -8),
