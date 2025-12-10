@@ -19,8 +19,6 @@ class MakeReportView: UIView {
     var locationLabel: UILabel!
     var addressField: UITextField!
     var mapButton: UIButton!
-    var submitPhotoLabel: UILabel!
-    var buttonSelectPhoto: UIButton!
     var sendReportButton: UIButton!
     
     override init(frame: CGRect) {
@@ -37,8 +35,6 @@ class MakeReportView: UIView {
         setupLocationLabel()
         setupAddressField()
         setupMapButton()
-        setupSubmitPhotoLabel()
-        setupButtonSelectPhoto()
         setupSendReportButton()
         
         initConstraints()
@@ -168,38 +164,6 @@ class MakeReportView: UIView {
         mapButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(mapButton)
     }
-    
-    func setupSubmitPhotoLabel() {
-        submitPhotoLabel = UILabel()
-        submitPhotoLabel.text = "Submit Photo"
-        submitPhotoLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        submitPhotoLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
-        submitPhotoLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(submitPhotoLabel)
-    }
-    
-    func setupButtonSelectPhoto() {
-        buttonSelectPhoto = UIButton(type: .system)
-        buttonSelectPhoto.setTitle("", for: .normal)
-        buttonSelectPhoto.setImage(UIImage(systemName: "camera.fill"), for: .normal)
-        buttonSelectPhoto.contentHorizontalAlignment = .fill
-        buttonSelectPhoto.contentVerticalAlignment = .fill
-        buttonSelectPhoto.imageView?.contentMode = .scaleAspectFit
-        buttonSelectPhoto.tintColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
-        buttonSelectPhoto.backgroundColor = .white
-        buttonSelectPhoto.layer.cornerRadius = 12
-        buttonSelectPhoto.layer.borderWidth = 1.5
-        buttonSelectPhoto.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
-        
-        buttonSelectPhoto.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.1).cgColor
-        buttonSelectPhoto.layer.shadowOffset = CGSize(width: 0, height: 2)
-        buttonSelectPhoto.layer.shadowRadius = 4
-        buttonSelectPhoto.layer.shadowOpacity = 1.0
-        
-        buttonSelectPhoto.showsMenuAsPrimaryAction = true
-        buttonSelectPhoto.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(buttonSelectPhoto)
-    }
 
     func setupSendReportButton() {
         sendReportButton = UIButton(type: .system)
@@ -260,15 +224,7 @@ class MakeReportView: UIView {
             mapButton.widthAnchor.constraint(equalToConstant: 200),
             mapButton.heightAnchor.constraint(equalToConstant: 150),
             
-            submitPhotoLabel.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 20),
-            submitPhotoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
-            
-            buttonSelectPhoto.topAnchor.constraint(equalTo: submitPhotoLabel.bottomAnchor, constant: 8),
-            buttonSelectPhoto.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            buttonSelectPhoto.widthAnchor.constraint(equalToConstant: 200),
-            buttonSelectPhoto.heightAnchor.constraint(equalToConstant: 150),
-            
-            sendReportButton.topAnchor.constraint(equalTo: buttonSelectPhoto.bottomAnchor, constant: 32),
+            sendReportButton.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 32),
             sendReportButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             sendReportButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             sendReportButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -32),
