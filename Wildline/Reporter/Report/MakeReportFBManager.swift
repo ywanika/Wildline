@@ -9,17 +9,7 @@ import UIKit
 import FirebaseFirestore
 
 extension MakeReportViewController {
-    
-    
-    
-    func createReport(report: Report) async throws -> Void {
-        guard let currentUserDocId = UserToken.shared.getUserId() else {
-            print("Current user id is nil")
-            return
-        }
-        
-        let db = Firestore.firestore()
-        
+    func createReport(report: Report, userId: String) async throws -> Void {
         let collectionReports = db.collection("reports")
         
         do{
@@ -31,8 +21,44 @@ extension MakeReportViewController {
 //                    self.navigationController?.popViewController(animated: true)
                     return
                 }
+                
             }
+            
+            // if successful, then add to user's collection of reportIds
+            addReportToUser(reportId: result.documentID, userId: userId)
+            
             print("report added with id: \(result.documentID)")
+            
+            
+        }catch{
+            print("Error adding report!")
+        }
+    }
+    
+    func addReportToUser(reportId: String, userId: String) {
+        guard !reportId.isEmpty, !userId.isEmpty else {
+            print("Error: reportId or userId is empty")
+            print("reportId: '\(reportId)', userId: '\(userId)'")
+            return
+        }
+        
+        let reportRef = ReportRef(reportId: reportId)
+        
+        let userReports = db.collection("users").document(userId).collection("reports")
+        
+        do{
+            let result = try userReports.addDocument(from: reportRef) {error in
+                if let error = error {
+                    //MARK: hide progress indicator...
+//                    self.hideActivityIndicator()
+                    
+//                    self.navigationController?.popViewController(animated: true)
+                    return
+                }
+                
+            }
+            
+            print("reportRef added with id: \(result.documentID)")
             
             // clear text fields if successfully added report
             makeReportView.titleField.text = ""

@@ -13,6 +13,7 @@ class MakeReportViewController: UIViewController {
     var makeReportView = MakeReportView()
     var pickedImage:UIImage?
     var currentUser: User!
+    let db = Firestore.firestore()
     
     override func loadView(){
         view = makeReportView
@@ -68,7 +69,10 @@ class MakeReportViewController: UIViewController {
         
         Task {
             do {
-                let currentUser = try await getUser(for:currentUserDocId)
+//                guard let currentUser = try await getUser(for:currentUserDocId) else {
+//                    showAlert(on: self, title: "Error", message: "Could not fetch user data.")
+//                }
+                let currentUser = try await Utilities.getUser(for:currentUserDocId)
                 let createdBy = currentUser.name
                 let userEmail = currentUser.email
                 let userPhoneNumber = currentUser.phoneNumber
@@ -89,22 +93,9 @@ class MakeReportViewController: UIViewController {
 
                                let report = Report(title: title!, createdBy: createdBy, userEmail: userEmail, userPhoneNumber: userPhoneNumber,description: description, location: coords, createdAt: createdAt)
                 
-                try await self.createReport(report: report)
+                try await self.createReport(report: report, userId: currentUserDocId)
             }
         }
-    }
-    
-    func getUser(for uid: String) async throws -> User {
-        
-        
-        let db = Firestore.firestore()
-        
-        let document = db.collection("users").document(uid)
-        let snapshot = try await document.getDocument()
-        
-        let user = try snapshot.data(as: User.self)
-        
-        return user
     }
 
 }

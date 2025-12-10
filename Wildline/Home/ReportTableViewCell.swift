@@ -8,6 +8,8 @@
 import UIKit
 
 class ReportTableViewCell: UITableViewCell {
+    static let identifier = "ReportTableViewCell"
+    
     var wrapperCellView: UIView!
     var titleLabel: UILabel!
     var timeLabel: UILabel!
@@ -33,8 +35,9 @@ class ReportTableViewCell: UITableViewCell {
     
     func setupWrapperCellView(){
         wrapperCellView = UITableViewCell()
+        
         wrapperCellView.backgroundColor = .white
-        wrapperCellView.layer.cornerRadius = 4.0
+        wrapperCellView.layer.cornerRadius = 8.0
         wrapperCellView.layer.shadowColor = UIColor.gray.cgColor
         wrapperCellView.layer.shadowOffset = .zero
         wrapperCellView.layer.shadowRadius = 2.0
