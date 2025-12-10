@@ -14,6 +14,7 @@ class AllReportsViewController: UIViewController {
     var reports = [Report]()
     let db = Firestore.firestore()
     var listener: ListenerRegistration?
+    let childProgressView = ProgressSpinnerViewController()
     
     override func loadView() {
         view = allReportsView
@@ -22,6 +23,7 @@ class AllReportsViewController: UIViewController {
     @MainActor
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.showActivityIndicator()
         
         listener?.remove()
         
@@ -57,6 +59,7 @@ class AllReportsViewController: UIViewController {
                     
                     self.allReportsView.reportsTable.reloadData()
                 })
+        self.hideActivityIndicator()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -73,11 +76,6 @@ class AllReportsViewController: UIViewController {
         allReportsView.reportsTable.register(AllReportsTableViewCell.self, forCellReuseIdentifier: AllReportsTableViewCell.identifier)
         allReportsView.reportsTable.delegate = self
         allReportsView.reportsTable.dataSource = self
-        
-//        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
-//        allReportsView.reportsTable.reloadData()
-        
-        // Do any additional setup after loading the view.
     }
 
 }
@@ -106,27 +104,41 @@ extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
         
         let quickLookViewController = QuickLookViewController()
         navigationController?.pushViewController(quickLookViewController, animated: true)
+        quickLookViewController.reportInfo = reports[indexPath.row]
         
         
-        //        Task {
-        //            do {
-        //                let chatViewController = ChatViewController()
-        //                let friendID = try await self.getFriendDocId(for: unorderedChatCellArray[indexPath.row].chatRefId, currentUser: currentUserDocId)
-        //                chatViewController.friend = try await self.getFriend(for: friendID)
-        //                chatViewController.friendDocID = friendID
-        //
-        //                let currentUser = try await getFriend(for: currentUserDocId)
-        //                chatViewController.currentUser = currentUser
-        //
-        //                chatViewController.chatRef = ChatRef(chatId: unorderedChatCellArray[indexPath.row].chatRefId)
-        //
-        //                print("friend: \(chatViewController.friend!)")
-        //                print("friendDocID: \(chatViewController.friendDocID!)")
-        //                print("chatRef: \(chatViewController.chatRef!)")
-        //                navigationController?.pushViewController(chatViewController, animated: true)
-        //            } catch {
-        //                print("Can't get friend")
-        //            }
-        //        }
+//        Task {
+//            do {
+//                let friendID = try await self.getFriendDocId(for: unorderedChatCellArray[indexPath.row].chatRefId, currentUser: currentUserDocId)
+//                chatViewController.friend = try await self.getFriend(for: friendID)
+//                chatViewController.friendDocID = friendID
+//
+//                let currentUser = try await getFriend(for: currentUserDocId)
+//                chatViewController.currentUser = currentUser
+//
+//                chatViewController.chatRef = ChatRef(chatId: unorderedChatCellArray[indexPath.row].chatRefId)
+//
+//                print("friend: \(chatViewController.friend!)")
+//                print("friendDocID: \(chatViewController.friendDocID!)")
+//                print("chatRef: \(chatViewController.chatRef!)")
+//                navigationController?.pushViewController(chatViewController, animated: true)
+//            } catch {
+//                print("Can't get friend")
+//            }
+//        }
+    }
+}
+
+extension AllReportsViewController:ProgressSpinnerDelegate{
+    func showActivityIndicator(){
+        addChild(childProgressView)
+        view.addSubview(childProgressView.view)
+        childProgressView.didMove(toParent: self)
+    }
+    
+    func hideActivityIndicator(){
+        childProgressView.willMove(toParent: nil)
+        childProgressView.view.removeFromSuperview()
+        childProgressView.removeFromParent()
     }
 }
