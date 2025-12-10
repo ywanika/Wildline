@@ -17,7 +17,6 @@ class ReportsMapViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         title = "Reports"
 
         // Do any additional setup after loading the view.

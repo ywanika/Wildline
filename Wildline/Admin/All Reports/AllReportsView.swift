@@ -13,7 +13,7 @@ class AllReportsView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(red: 0.95, green: 0.98, blue: 0.95, alpha: 1.0)
         
         setupReportsTable()
         
@@ -22,6 +22,7 @@ class AllReportsView: UIView {
     
     func setupReportsTable() {
         reportsTable = UITableView()
+        reportsTable.backgroundColor = .clear
         reportsTable.register(AllReportsTableViewCell.self, forCellReuseIdentifier: "title")
         reportsTable.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(reportsTable)

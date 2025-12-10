@@ -72,8 +72,9 @@ class AllReportsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         title = "Unclaimed Reports"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
         
         allReportsView.reportsTable.register(AllReportsTableViewCell.self, forCellReuseIdentifier: AllReportsTableViewCell.identifier)
         allReportsView.reportsTable.delegate = self
