@@ -95,7 +95,6 @@ extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    // route to chat with friend
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //        tableView.deselectRow(at: indexPath, animated: true)
         //        print(unorderedChatCellArray[indexPath.row].friendUid)
