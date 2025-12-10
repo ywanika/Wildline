@@ -50,11 +50,42 @@ extension QuickLookViewController {
                 // MARK: Adding rehabber to report
                 
                 print("Report claimed successfully")
+                addReportToUser(reportId: reportId, userId: myUserId)
                 
             } catch {
                 print("Error claiming report: \(error)")
             }
         }
         
+    }
+    
+    func addReportToUser(reportId: String, userId: String) {
+        guard !reportId.isEmpty, !userId.isEmpty else {
+            print("Error: reportId or userId is empty")
+            print("reportId: '\(reportId)', userId: '\(userId)'")
+            return
+        }
+        
+        let reportRef = ReportRef(reportId: reportId)
+        
+        let userReports = db.collection("users").document(userId).collection("reports")
+        
+        do{
+            let result = try userReports.addDocument(from: reportRef) {error in
+                if let error = error {
+                    //MARK: hide progress indicator...
+//                    self.hideActivityIndicator()
+                    
+//                    self.navigationController?.popViewController(animated: true)
+                    return
+                }
+                
+            }
+            
+            print("reportRef added with id: \(result.documentID)")
+            
+        }catch{
+            print("Error adding report!")
+        }
     }
 }

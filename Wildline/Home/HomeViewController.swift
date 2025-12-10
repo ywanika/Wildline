@@ -127,17 +127,20 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
 
-    // route to chat with friend
+    // route to report details
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //        tableView.deselectRow(at: indexPath, animated: true)
         //        print(unorderedChatCellArray[indexPath.row].friendUid)
         //
-        //        guard let currentUserDocId = UserCache.shared.getUserId() else {
-        //            print("Current user id is nil")
-        //            return
-        //        }
+        guard let currentUserDocId = UserToken.shared.getUserId() else {
+            print("Current user id is nil")
+            return
+        }
         
-        let reportDetailsViewController = ReportDetailsViewController()
+        var reportDetailsViewController = ReportDetailsViewController()
+        
+        reportDetailsViewController.report = reports[indexPath.row]
+        
         navigationController?.pushViewController(reportDetailsViewController, animated: true)
         
         

@@ -10,6 +10,7 @@ import UIKit
 class ReportDetailsViewController: UIViewController {
 
     let reportsDetails = ReportDetailsView()
+    var report: Report? = nil
     
     override func loadView() {
         view = reportsDetails
@@ -20,18 +21,15 @@ class ReportDetailsViewController: UIViewController {
         view.backgroundColor = .white
         title = "Reports Details"
 
+        populateView()
         // Do any additional setup after loading the view.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func populateView() {
+        guard let report = report else { return }
+        reportsDetails.reporterNameLabel.text = report.createdBy
+        reportsDetails.reporterPhoneLabel.text = report.userPhoneNumber
+        reportsDetails.descriptionTextView.text = report.description
+        
     }
-    */
-
 }
