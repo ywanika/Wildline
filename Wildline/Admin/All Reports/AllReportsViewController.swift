@@ -12,75 +12,34 @@ class AllReportsViewController: UIViewController {
 
     let allReportsView = AllReportsView()
     var reports = [Report]()
-    let db = Firestore.firestore()
-    var listener: ListenerRegistration?
     
     override func loadView() {
         view = allReportsView
     }
-    
-    @MainActor
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        listener?.remove()
-        
-        listener = self.db.collection("reports").addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
-                    if let error = error {
-                        print("Error fetching reports: \(error)")
-                        return
-                    }
-                    
-                    guard let documents = querySnapshot?.documents else {
-                        print("No documents found")
-                        return
-                    }
-                    
-                    // Clear the array before repopulating
-                    self.reports.removeAll()
-                    
-                    for document in documents {
-                        do {
-                            let report = try document.data(as: Report.self)
-                            self.reports.append(report)
-                        } catch {
-                            print("Error decoding report: \(error)")
-                        }
-                    }
-                    
-                    self.reports.sort(by: { $0.createdAt > $1.createdAt })
-                    
-                    print("Loaded \(self.reports.count) reports")
-                    for report in self.reports {
-                        print(report)
-                    }
-                    
-                    self.allReportsView.reportsTable.reloadData()
-                })
-    }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        listener?.remove()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         title = "All Claims"
         
-        allReportsView.reportsTable.register(AllReportsTableViewCell.self, forCellReuseIdentifier: AllReportsTableViewCell.identifier)
         allReportsView.reportsTable.delegate = self
         allReportsView.reportsTable.dataSource = self
         
-//        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
-//        allReportsView.reportsTable.reloadData()
+        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
+        allReportsView.reportsTable.reloadData()
         
         // Do any additional setup after loading the view.
     }
-    
-    
 
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+    }
+    */
 
 }
 
@@ -90,7 +49,7 @@ extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: AllReportsTableViewCell.identifier,
+        let cell = tableView.dequeueReusableCell(withIdentifier: "title",
                                                  for: indexPath) as! AllReportsTableViewCell
         let report = reports[indexPath.row]
         cell.titleLabel.text = report.title
