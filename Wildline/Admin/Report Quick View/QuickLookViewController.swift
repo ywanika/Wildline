@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 import FirebaseAuth
 import FirebaseFirestore
 
@@ -34,12 +35,33 @@ class QuickLookViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addPin()
     }
     
     @objc func onClaimReportButtonTapped() {
         claimReport()
         quickLookView.claimReportButton.isHidden = true
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func addPin() {
+        let coordinate = CLLocationCoordinate2D(
+            latitude: reportInfo.location.latitude,
+            longitude: reportInfo.location.longitude
+        )
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = "Report Location"
+        
+        quickLookView.mapPreview.addAnnotation(annotation)
+        
+        // Center and zoom the map on the pin
+        let region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+        )
+        quickLookView.mapPreview.setRegion(region, animated: false)
     }
 
 }

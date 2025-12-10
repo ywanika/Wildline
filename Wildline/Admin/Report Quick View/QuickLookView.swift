@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 
 class QuickLookView: UIView {
 
@@ -18,6 +19,9 @@ class QuickLookView: UIView {
     var descriptionLabel: UILabel!
     var descriptionTextView: UITextView!
     var claimReportButton: UIButton!
+    
+    var mapPreview: MKMapView!
+    var mapButton: UIButton!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -34,8 +38,31 @@ class QuickLookView: UIView {
         setupDescriptionTextView()
         setupClaimReportButton()
         
-        initConstraints()
         
+        setupMapPreview()
+        setupMapButton()
+        
+        
+        initConstraints()
+    }
+    
+    func setupMapPreview() {
+        mapPreview = MKMapView()
+        mapPreview.isUserInteractionEnabled = false
+        mapPreview.layer.cornerRadius = 12
+        mapPreview.layer.borderWidth = 1.5
+        mapPreview.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        mapPreview.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapPreview)
+    }
+    
+    func setupMapButton() {
+        mapButton = UIButton(type: .system)
+        mapButton.setTitle("", for: .normal)
+        mapButton.backgroundColor = .clear
+        
+        mapButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapButton)
     }
     
     func setupScrollView() {
@@ -115,7 +142,17 @@ class QuickLookView: UIView {
             locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            descriptionLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 12),
+            mapPreview.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 16),
+            mapPreview.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            mapPreview.widthAnchor.constraint(equalToConstant: 300),
+            mapPreview.heightAnchor.constraint(equalToConstant: 250),
+            
+            mapButton.topAnchor.constraint(equalTo: mapPreview.topAnchor),
+            mapButton.leadingAnchor.constraint(equalTo: mapPreview.leadingAnchor),
+            mapButton.trailingAnchor.constraint(equalTo: mapPreview.trailingAnchor),
+            mapButton.bottomAnchor.constraint(equalTo: mapPreview.bottomAnchor),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
