@@ -10,9 +10,15 @@ import FirebaseFirestore
 
 class HomeViewController: UIViewController {
     let homeView = HomeView()
-    var reports = [Report]()
+    var openReports = [Report]()
+    var closedReports = [Report]()
+    var latestStatusTimes: [String: Date] = [:] // reportId: latest status time
+    var displayedReports: [Report] {
+        return homeView.segmentedControl.selectedSegmentIndex == 0 ? openReports : closedReports
+    }
     let db = Firestore.firestore()
-    var listener: ListenerRegistration?
+    var reportsListener: ListenerRegistration?
+    var statusListeners: [String: ListenerRegistration] = [:] // Track status listener by reportId
     
     override func loadView() {
         view = homeView
@@ -22,14 +28,15 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        listener?.remove()
+        reportsListener?.remove()
+        removeAllStatusListeners()
         
         guard let currentUserDocId = UserToken.shared.getUserId() else {
             print("Current user id is nil")
             return
         }
         
-        listener = self.db.collection("users").document(currentUserDocId).collection("reports")
+        reportsListener = self.db.collection("users").document(currentUserDocId).collection("reports")
             .addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
                     if let error = error {
                         print("Error fetching reports: \(error)")
@@ -53,14 +60,15 @@ class HomeViewController: UIViewController {
                     }
                 
                     Task {
-                        await self.fetchReports(from: reportRefs)
+                        await self.fetchReportsAndListenToStatuses(from: reportRefs)
                     }
                 })
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        listener?.remove()
+        reportsListener?.remove()
+        removeAllStatusListeners()
     }
 
     override func viewDidLoad() {
@@ -87,8 +95,11 @@ class HomeViewController: UIViewController {
         homeView.reportsTable.delegate = self
         homeView.reportsTable.dataSource = self
         
-//        reports.append(Report(title: "lost falcon", createdBy: "alice", userEmail: "alice@gmail.com", userPhoneNumber: "1112223333", description: "i just found them here!", location: GeoPoint(latitude: 42.33681, longitude: 71.08579), createdAt: Date()))
-//        homeView.reportsTable.reloadData()
+        homeView.segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
+    }
+    
+    @objc func segmentChanged() {
+        homeView.reportsTable.reloadData()
     }
     
     // Ciara - updated this to load the new Profile screens I made
@@ -110,64 +121,54 @@ class HomeViewController: UIViewController {
         loginViewController.modalPresentationStyle = .fullScreen
         self.present(loginViewController, animated: true)
     }
+    
+    func removeAllStatusListeners() {
+        for (_, listener) in statusListeners {
+            listener.remove()
+        }
+        statusListeners.removeAll()
+    }
 
 }
 
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return reports.count
+        return displayedReports.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReportTableViewCell.identifier,
                                                  for: indexPath) as! ReportTableViewCell
-        let report = reports[indexPath.row]
+        let report = displayedReports[indexPath.row]
         cell.titleLabel.text = report.title
-        cell.timeLabel.text = Utilities.relativeString(from: report.createdAt)
+        if let reportId = report.id, let latestStatusTime = latestStatusTimes[reportId] {
+            cell.timeLabel.text = "Updated \(Utilities.relativeString(from: latestStatusTime))" 
+        } else {
+            print("No latest status time for report with id: \(report.id ?? "nil")")
+            cell.timeLabel.text = Utilities.relativeString(from: report.createdAt)
+        }
         return cell
     }
 
     // route to report details
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //        tableView.deselectRow(at: indexPath, animated: true)
-        //        print(unorderedChatCellArray[indexPath.row].friendUid)
-        //
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         guard let currentUserDocId = UserToken.shared.getUserId() else {
             print("Current user id is nil")
             return
         }
         
-        // Check if index is valid
-        guard indexPath.row < reports.count else {
-            print("Invalid index: \(indexPath.row), reports count: \(reports.count)")
+        guard indexPath.row < displayedReports.count else {
+            print("Invalid report index")
             return
         }
         
-        var reportDetailsViewController = ReportDetailsViewController()
+        let report = displayedReports[indexPath.row]
         
-        reportDetailsViewController.reportInfo = reports[indexPath.row]
+        let reportDetailsViewController = ReportDetailsViewController()
+        reportDetailsViewController.reportInfo = report
         
         navigationController?.pushViewController(reportDetailsViewController, animated: true)
-        
-        //        Task {
-        //            do {
-        //                let chatViewController = ChatViewController()
-        //                let friendID = try await self.getFriendDocId(for: unorderedChatCellArray[indexPath.row].chatRefId, currentUser: currentUserDocId)
-        //                chatViewController.friend = try await self.getFriend(for: friendID)
-        //                chatViewController.friendDocID = friendID
-        //
-        //                let currentUser = try await getFriend(for: currentUserDocId)
-        //                chatViewController.currentUser = currentUser
-        //
-        //                chatViewController.chatRef = ChatRef(chatId: unorderedChatCellArray[indexPath.row].chatRefId)
-        //
-        //                print("friend: \(chatViewController.friend!)")
-        //                print("friendDocID: \(chatViewController.friendDocID!)")
-        //                print("chatRef: \(chatViewController.chatRef!)")
-        //                navigationController?.pushViewController(chatViewController, animated: true)
-        //            } catch {
-        //                print("Can't get friend")
-        //            }
-        //        }
     }
 }
