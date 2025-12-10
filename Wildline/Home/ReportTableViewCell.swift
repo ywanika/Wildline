@@ -35,8 +35,9 @@ class ReportTableViewCell: UITableViewCell {
     
     func setupWrapperCellView(){
         wrapperCellView = UITableViewCell()
+        
         wrapperCellView.backgroundColor = .white
-        wrapperCellView.layer.cornerRadius = 4.0
+        wrapperCellView.layer.cornerRadius = 8.0
         wrapperCellView.layer.shadowColor = UIColor.gray.cgColor
         wrapperCellView.layer.shadowOffset = .zero
         wrapperCellView.layer.shadowRadius = 2.0

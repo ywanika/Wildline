@@ -39,4 +39,10 @@ class Utilities{
         
         return user
     }
+    
+    static func relativeString(from date: Date) -> String {
+        let fmt = RelativeDateTimeFormatter()
+        fmt.unitsStyle = .short
+        return fmt.localizedString(for: date, relativeTo: Date())
+    }
 }

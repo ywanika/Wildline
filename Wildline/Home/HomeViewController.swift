@@ -123,7 +123,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
                                                  for: indexPath) as! ReportTableViewCell
         let report = reports[indexPath.row]
         cell.titleLabel.text = report.title
-        cell.timeLabel.text = DateFormatter().string(from: report.createdAt) // TODO: calculate time since
+        cell.timeLabel.text = Utilities.relativeString(from: report.createdAt)
         return cell
     }
 
