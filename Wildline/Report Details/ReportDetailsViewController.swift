@@ -12,6 +12,7 @@ import FirebaseFirestore
 class ReportDetailsViewController: UIViewController {
 
     let reportsDetails = ReportDetailsView()
+    var report: Report? = nil
     var reportInfo: Report!
     var currentUserRole = UserToken.shared.getUserRole()
     var nextActionLabel: UpdateTypes?
@@ -117,7 +118,8 @@ class ReportDetailsViewController: UIViewController {
             })
         
         DispatchQueue.main.async {
-            if self.currentUserRole == "user" {                self.reportsDetails.configureForReporter()
+            if self.currentUserRole == "user" {
+                self.reportsDetails.configureForReporter()
             }
         }
     }
