@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 
 let ACCENT_COLOR = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
 
@@ -29,6 +30,9 @@ class ReportDetailsView: UIView {
     var scrollView: UIScrollView!
     var contentView: UIView!
     
+    var mapPreview: MKMapView!
+    var mapButton: UIButton!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -41,8 +45,30 @@ class ReportDetailsView: UIView {
         setupTimeline()
         setupActionButton()
         
+        setupMapPreview()
+        setupMapButton()
+        
         
         initConstraints()
+    }
+    
+    func setupMapPreview() {
+        mapPreview = MKMapView()
+        mapPreview.isUserInteractionEnabled = false
+        mapPreview.layer.cornerRadius = 12
+        mapPreview.layer.borderWidth = 1.5
+        mapPreview.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        mapPreview.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapPreview)
+    }
+    
+    func setupMapButton() {
+        mapButton = UIButton(type: .system)
+        mapButton.setTitle("", for: .normal)
+        mapButton.backgroundColor = .clear
+        
+        mapButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapButton)
     }
     
     func setupScrollView() {
@@ -199,7 +225,17 @@ class ReportDetailsView: UIView {
             descriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            timelineLabel.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 24),
+            mapPreview.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 16),
+            mapPreview.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            mapPreview.widthAnchor.constraint(equalToConstant: 250),
+            mapPreview.heightAnchor.constraint(equalToConstant: 150),
+            
+            mapButton.topAnchor.constraint(equalTo: mapPreview.topAnchor),
+            mapButton.leadingAnchor.constraint(equalTo: mapPreview.leadingAnchor),
+            mapButton.trailingAnchor.constraint(equalTo: mapPreview.trailingAnchor),
+            mapButton.bottomAnchor.constraint(equalTo: mapPreview.bottomAnchor),
+            
+            timelineLabel.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 24),
             timelineLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             timelineStackView.topAnchor.constraint(equalTo: timelineLabel.bottomAnchor, constant: 12),

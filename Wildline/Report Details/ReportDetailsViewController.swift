@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 import FirebaseAuth
 import FirebaseFirestore
 
@@ -139,6 +140,8 @@ class ReportDetailsViewController: UIViewController {
         reportsDetails.reporterPhoneLabel.text = Utilities.formatPhoneNumber(from: reportInfo.userPhoneNumber)   
         reportsDetails.descriptionTextView.text = reportInfo.description
         
+        addPin()
+        
         if currentUserRole == "admin" {
             print("is admin")
             Task {
@@ -226,5 +229,25 @@ class ReportDetailsViewController: UIViewController {
             let eventView = TimelineEventView(status: status, isLastItem: isLastItem)
             reportsDetails.timelineStackView.addArrangedSubview(eventView)
         }
+    }
+    
+    private func addPin() {
+        let coordinate = CLLocationCoordinate2D(
+            latitude: reportInfo.location.latitude,
+            longitude: reportInfo.location.longitude
+        )
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = "Report Location"
+        
+        reportsDetails.mapPreview.addAnnotation(annotation)
+        
+        // Center and zoom the map on the pin
+        let region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+        )
+        reportsDetails.mapPreview.setRegion(region, animated: false)
     }
 }

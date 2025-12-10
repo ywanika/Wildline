@@ -38,7 +38,6 @@ class QuickLookView: UIView {
         setupDescriptionTextView()
         setupClaimReportButton()
         
-        
         setupMapPreview()
         setupMapButton()
         
