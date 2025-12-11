@@ -59,6 +59,12 @@ class AllReportsViewController: UIViewController {
                             self.hideActivityIndicator()
                         }
                     }
+                    
+                    self.reports.sort(by: { $0.createdAt > $1.createdAt })
+                    
+                    print("Loaded \(self.reports.count) reports")
+                    
+                    self.allReportsView.reportsTable.reloadData()
                 })
 //        self.hideActivityIndicator()
     }

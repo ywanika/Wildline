@@ -1,14 +1,15 @@
 //
-//  QuickLookViewController.swift
-//  Wildline
+//  QuickLookViewController.swift
+//  Wildline
 //
-//  Created by Anika Sharma on 11/17/25.
+//  Created by Anika Sharma on 11/17/25.
 //
 
 import UIKit
 import MapKit
 import FirebaseAuth
 import FirebaseFirestore
+import MapKit
 
 class QuickLookViewController: UIViewController {
     let db = Firestore.firestore()
@@ -16,6 +17,7 @@ class QuickLookViewController: UIViewController {
     var quickLookView = QuickLookView()
     var reportInfo: Report!
     var currentUser:FirebaseAuth.User?
+    let notificationCenter = NotificationCenter.default
     
     override func loadView(){
         view = quickLookView
@@ -23,6 +25,8 @@ class QuickLookViewController: UIViewController {
         quickLookView.titleLabel.text = reportInfo.title
         quickLookView.descriptionTextView.text = reportInfo.description
         quickLookView.reporterNameLabel.text = "Reported By: \(reportInfo.createdBy)"
+        
+        reverseGeocodeLocation()
         
         if reportInfo.adminName.isEmpty == true || reportInfo.adminName == "" {
             quickLookView.claimReportButton.isHidden = false
@@ -38,9 +42,34 @@ class QuickLookViewController: UIViewController {
         addPin()
     }
     
+    func reverseGeocodeLocation() {
+        let location = CLLocation(latitude: reportInfo.location.latitude, longitude: reportInfo.location.longitude)
+        
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] (placemarks, error) in
+            guard let self = self else { return }
+            
+            var addressString: String = "Location Address Not Found"
+            
+            if let placemark = placemarks?.first {
+                addressString = [placemark.thoroughfare, placemark.locality, placemark.administrativeArea]
+                    .compactMap { $0 }
+                    .joined(separator: ", ")
+            }
+            
+            DispatchQueue.main.async {
+                            self.quickLookView.updateLocationDisplay(address: addressString, distance: nil)
+                        }
+        }
+    }
+
     @objc func onClaimReportButtonTapped() {
         claimReport()
         quickLookView.claimReportButton.isHidden = true
+        
+        print("about to send notif")
+        notificationCenter.post(name: Notification.Name("reloadReports"), object: nil)
+        print("should have sent notif")
+        
         navigationController?.popViewController(animated: true)
     }
     
