@@ -19,6 +19,10 @@ class ReportDetailsView: UIView {
     var reporterNameLabel: UILabel!
     var reporterPhoneLabel: UILabel!
     
+    var rehabberInfoLabel: UILabel!
+    var rehabberNameLabel: UILabel!
+    var rehabberPhoneLabel: UILabel!
+    
     var descriptionLabel: UILabel!
     var descriptionTextView: UITextView!
     
@@ -41,6 +45,7 @@ class ReportDetailsView: UIView {
         setupScrollView()
         setupHeader()
         setupReporterInfo()
+        setupRehabberInfo()
         setupDescription()
         setupTimeline()
         setupActionButton()
@@ -122,6 +127,27 @@ class ReportDetailsView: UIView {
         contentView.addSubview(reporterPhoneLabel)
     }
     
+    func setupRehabberInfo() {
+        rehabberInfoLabel = UILabel()
+        rehabberInfoLabel.text = "Reporter Info"
+        rehabberInfoLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        rehabberInfoLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
+        rehabberInfoLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(rehabberInfoLabel)
+        
+        rehabberNameLabel = UILabel()
+        rehabberNameLabel.text = "Alice A."
+        rehabberNameLabel.font = .preferredFont(forTextStyle: .body)
+        rehabberNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(rehabberNameLabel)
+        
+        rehabberPhoneLabel = UILabel()
+        rehabberPhoneLabel.text = "012-345-6789"
+        rehabberPhoneLabel.font = .preferredFont(forTextStyle: .body)
+        rehabberPhoneLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(rehabberPhoneLabel)
+    }
+    
     func setupDescription() {
         descriptionLabel = UILabel()
         descriptionLabel.text = "Description of the report"
@@ -184,6 +210,12 @@ class ReportDetailsView: UIView {
         updateButton.isHidden = true
     }
     
+    func configureForUnclaimed() {
+        rehabberInfoLabel.isHidden = true
+        rehabberNameLabel.isHidden = true
+        rehabberPhoneLabel.isHidden = true
+    }
+    
 //    func addTimelineEvent(title: String, description: String, isExpanded: Bool = false) {
 //        let eventView = TimelineEventView(title: title, description: description, isExpanded: isExpanded)
 //        timelineStackView.addArrangedSubview(eventView)
@@ -216,6 +248,15 @@ class ReportDetailsView: UIView {
             
             reporterPhoneLabel.topAnchor.constraint(equalTo: reporterNameLabel.bottomAnchor, constant: 2),
             reporterPhoneLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            
+            rehabberInfoLabel.topAnchor.constraint(equalTo: reporterInfoLabel.topAnchor),
+            rehabberInfoLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            rehabberNameLabel.topAnchor.constraint(equalTo: reporterNameLabel.topAnchor),
+            rehabberNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            rehabberPhoneLabel.topAnchor.constraint(equalTo: reporterPhoneLabel.topAnchor),
+            rehabberPhoneLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
             descriptionLabel.topAnchor.constraint(equalTo: reporterPhoneLabel.bottomAnchor, constant: 16),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

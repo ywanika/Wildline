@@ -142,6 +142,14 @@ class ReportDetailsViewController: UIViewController {
         
         addPin()
         
+        if reportInfo.adminName == "" || reportInfo.adminPhoneNumber == "" {
+            reportsDetails.configureForUnclaimed()
+        } else {
+            reportsDetails.rehabberInfoLabel.isHidden = false
+            reportsDetails.rehabberNameLabel.text = reportInfo.adminName
+            reportsDetails.rehabberPhoneLabel.text = Utilities.formatPhoneNumber(from: reportInfo.adminPhoneNumber) 
+        }
+        
         if currentUserRole == "admin" {
             print("is admin")
             Task {
