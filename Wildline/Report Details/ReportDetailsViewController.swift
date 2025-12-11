@@ -47,7 +47,7 @@ class ReportDetailsViewController: UIViewController {
                     
                     guard let latestStatusDoc = querySnapshot?.documents.first else {
                         print("No status found")
-                        self.nextActionLabel = UpdateTypes.Cancelled
+                        self.nextActionLabel = UpdateTypes.Withdrawn
                         DispatchQueue.main.async {
                             self.updateUIForNextAction()
                         }
@@ -68,7 +68,7 @@ class ReportDetailsViewController: UIViewController {
                                 print("Report is already at final status")
                                 self.nextActionLabel = nil
                             }
-                        } else if latestStatus.type == UpdateTypes.Cancelled {
+                        } else if latestStatus.type == UpdateTypes.Withdrawn {
                             self.nextActionLabel = nil
                         } else{
                             print("Current status type not found in update order")
@@ -113,9 +113,15 @@ class ReportDetailsViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     self.populateTimeline(statuses: self.statuses)
+                    
+                    if self.currentUserRole == "user" {
+                        let sortedStatuses = self.statuses.sorted { $0.createdAt > $1.createdAt }
+                        if let latestStatus = sortedStatuses.first,
+                           (latestStatus.type == .Cancelled || latestStatus.type == .Finished) {
+                            self.reportsDetails.updateButton.isHidden = true
+                        }
+                    }
                 }
-                
-                print("Number of statuses: \(self.statuses.count)")
             })
         
         DispatchQueue.main.async {
@@ -169,8 +175,17 @@ class ReportDetailsViewController: UIViewController {
         } else if currentUserRole == "user" {
             print("is user")
             reportsDetails.configureForReporter()
-            //TODO give users delete option
-            reportsDetails.updateButton.addTarget(self, action: #selector(onDeleteTapped), for: .touchUpInside)
+            Task {
+                let isClosed = await checkIfReportClosed()
+                await MainActor.run {
+                    if isClosed {
+                        reportsDetails.updateButton.isHidden = true
+                    } else {
+                        reportsDetails.updateButton.isHidden = false
+                        reportsDetails.updateButton.addTarget(self, action: #selector(onCancelTapped), for: .touchUpInside)
+                    }
+                }
+            }
         } else {
             showAlert(on: self, title: "No User Found", message: "")
         }
@@ -192,21 +207,22 @@ class ReportDetailsViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func onDeleteTapped(){
-        let deleteAlert = UIAlertController(
-            title: "Delete Report?",
-            message: "Are you sure you want to DELETE this report?",
-            preferredStyle: .actionSheet
+    @objc func onCancelTapped(){
+        let cancelAlert = UIAlertController(
+            title: "Cancel Report?",
+            message: "Are you sure you want to cancel this report?",
+            preferredStyle: .alert
         )
         
-        deleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: {(_) in
-            self.deleteReport()
-            self.navigationController?.popViewController(animated: true)
+        cancelAlert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: {(_) in
+            Task {
+                await self.cancelReport()
+            }
         }))
         
-        deleteAlert.addAction(UIAlertAction(title: "Do Not Delete", style: .cancel))
+        cancelAlert.addAction(UIAlertAction(title: "Do Not Cancel", style: .cancel))
         
-        self.present(deleteAlert, animated: true)
+        self.present(cancelAlert, animated: true)
     }
     
     func updateUIForNextAction() {

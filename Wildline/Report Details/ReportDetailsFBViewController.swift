@@ -30,7 +30,7 @@ extension ReportDetailsViewController{
             
             guard let latestStatusDoc = statusSnapshot.documents.first else {
                 print("No status found")
-                nextActionLabel = UpdateTypes.Cancelled
+                nextActionLabel = UpdateTypes.Withdrawn
                 return
             }
             
@@ -47,7 +47,7 @@ extension ReportDetailsViewController{
                     print("Report is already at final status")
                     self.nextActionLabel = nil
                 }
-            } else if latestStatus.type == UpdateTypes.Cancelled {
+            } else if latestStatus.type == UpdateTypes.Withdrawn {
                 self.nextActionLabel = nil
             } else{
                 print("Current status type not found in update order")
@@ -133,7 +133,7 @@ extension ReportDetailsViewController{
                 
                 // MARK: Adding withdrawal status to report
                 let status = Status(
-                    type: UpdateTypes.Cancelled,
+                    type: UpdateTypes.Withdrawn,
                     message: "\(rehabber.name) has withdrawn from this report. Finding a new rehabber!",
                     createdAt: Date()
                 )
@@ -163,84 +163,73 @@ extension ReportDetailsViewController{
         }
     }
     
-    /// Removes report from user subcollection, removes report from admin subcollection, deletes report
-    func deleteReport() {
-        
-        guard let myUserId = UserToken.shared.getUserId() else {
-            print("User not found")
+    func cancelReport() async {
+        guard let reportId = reportInfo.id,
+              let userId = UserToken.shared.getUserId() else {
+            print("Missing report ID or user ID")
             return
         }
         
-        Task {
-            do {
-                guard let reportId = reportInfo.id else {
-                    print("Report ID is nil")
-                    return
-                }
-                
-                let db = Firestore.firestore()
-                
-                // MARK: Remove report from user's subcollection
-                let userDocuments = try await db.collection("users")
-                    .whereField("email", isEqualTo: reportInfo.userEmail)
-                    .getDocuments()
-                
-                if let userDocument = userDocuments.documents.first {
-                    let userReportsRef = db.collection("users")
-                        .document(userDocument.documentID)
-                        .collection("reports")
-                    
-                    // Find and delete the report reference
-                    let userReportSnapshot = try await userReportsRef
-                        .whereField("reportId", isEqualTo: reportId)
-                        .getDocuments()
-                    
-                    for document in userReportSnapshot.documents {
-                        try await document.reference.delete()
-                        print("Report removed from user's subcollection: \(document.documentID)")
-                    }
-                }
-                
-                // MARK: Removing report from rehabber
-                let userReportsRef = db.collection("users").document(myUserId).collection("reports")
-                
-                // Find and delete the report reference
-                let querySnapshot = try await userReportsRef
-                    .whereField("reportId", isEqualTo: reportId)
-                    .getDocuments()
-                
-                for document in querySnapshot.documents {
-                    try await document.reference.delete()
-                    print("Report reference removed with id: \(document.documentID)")
-                }
-                
-                // MARK: Delete all status documents in the subcollection
-                let statusSnapshot = try await db.collection("reports")
-                    .document(reportId)
-                    .collection("status")
-                    .getDocuments()
-                
-                for statusDoc in statusSnapshot.documents {
-                    try await statusDoc.reference.delete()
-                    print("Status document deleted: \(statusDoc.documentID)")
-                }
-                
-                // MARK: Delete the main report document
-                try await db.collection("reports").document(reportId).delete()
-                
-                print("Report deleted successfully")
-                
-                // Navigate back or show success message
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-                }
-                
-            } catch {
-                print("Error deleting report: \(error)")
-                DispatchQueue.main.async {
-                    showAlert(on: self, title: "Error", message: "Failed to delete report")
-                }
+        do {
+            // Create a cancelled status
+            let cancelledStatus = Status(
+                type: .Cancelled,
+                message: "Report cancelled by reporter \(reportInfo.createdBy)",
+                createdAt: Date()
+            )
+            
+            // Add the status to Firestore
+            try await db.collection("reports")
+                .document(reportId)
+                .collection("status")
+                .addDocument(from: cancelledStatus)
+            
+            print("Report cancelled successfully")
+            
+            // Update UI and navigate back
+            await MainActor.run {
+                self.reportsDetails.configureForViewer()
+                self.navigationController?.popViewController(animated: true)
             }
+            
+        } catch {
+            print("Error cancelling report: \(error)")
+            
+            // Show error alert
+            await MainActor.run {
+                let errorAlert = UIAlertController(
+                    title: "Error",
+                    message: "Could not cancel report. Please try again.",
+                    preferredStyle: .alert
+                )
+                errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(errorAlert, animated: true)
+            }
+        }
+    }
+    
+    func checkIfReportClosed() async -> Bool {
+        guard let reportId = reportInfo.id else { return false }
+        
+        do {
+            let statusSnapshot = try await db.collection("reports")
+                .document(reportId)
+                .collection("status")
+                .order(by: "createdAt", descending: true)
+                .limit(to: 1)
+                .getDocuments()
+            
+            if let latestStatusDoc = statusSnapshot.documents.first {
+                let latestStatus = try latestStatusDoc.data(as: Status.self)
+                
+                // Check if report is closed (Cancelled or Finished)
+                return latestStatus.type == .Cancelled || latestStatus.type == .Finished
+            }
+            
+            return false
+        } catch {
+            print("Error checking report status: \(error)")
+            return false
         }
     }
 

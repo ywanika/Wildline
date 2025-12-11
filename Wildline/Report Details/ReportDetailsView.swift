@@ -87,7 +87,7 @@ class ReportDetailsView: UIView {
         contentView.addSubview(titleLabel)
         
         updateButton = UIButton(type: .system)
-        updateButton.setTitle("Delete", for: .normal)
+        updateButton.setTitle("Cancel", for: .normal)
         updateButton.setTitleColor(.white, for: .normal)
         updateButton.backgroundColor = ACCENT_COLOR
         updateButton.layer.borderWidth = 0
@@ -173,7 +173,7 @@ class ReportDetailsView: UIView {
     
     func configureForReporter() {
         // TODO
-        updateButton.setTitle("Delete Report", for: .normal)
+        updateButton.setTitle("Cancel Report", for: .normal)
         actionButton.isHidden = true
         updateButton.isHidden = false
     }
