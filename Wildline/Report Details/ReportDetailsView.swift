@@ -83,6 +83,7 @@ class ReportDetailsView: UIView {
     
     func setupHeader() {
         titleLabel = createStyledTitleLabel(title: "Title")
+        titleLabel.lineBreakMode = .byWordWrapping
         contentView.addSubview(titleLabel)
         
         updateButton = UIButton(type: .system)
@@ -172,11 +173,9 @@ class ReportDetailsView: UIView {
     
     func configureForReporter() {
         // TODO
-//        actionButton.setTitle("Delete Report", for: .normal)
-//        actionButton.setTitleColor(.systemRed, for: .normal)
-//        actionButton.layer.borderColor = UIColor.systemRed.cgColor
+        updateButton.setTitle("Delete Report", for: .normal)
         actionButton.isHidden = true
-        updateButton.isHidden = true
+        updateButton.isHidden = false
     }
     
     func configureForViewer() {
@@ -201,12 +200,12 @@ class ReportDetailsView: UIView {
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            
-            updateButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+
+            updateButton.centerYAnchor.constraint(equalTo: contentView.topAnchor, constant: 30),
             updateButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            titleLabel.topAnchor.constraint(equalTo: updateButton.bottomAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             reporterInfoLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
             reporterInfoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

@@ -162,5 +162,86 @@ extension ReportDetailsViewController{
             }
         }
     }
+    
+    /// Removes report from user subcollection, removes report from admin subcollection, deletes report
+    func deleteReport() {
+        
+        guard let myUserId = UserToken.shared.getUserId() else {
+            print("User not found")
+            return
+        }
+        
+        Task {
+            do {
+                guard let reportId = reportInfo.id else {
+                    print("Report ID is nil")
+                    return
+                }
+                
+                let db = Firestore.firestore()
+                
+                // MARK: Remove report from user's subcollection
+                let userDocuments = try await db.collection("users")
+                    .whereField("email", isEqualTo: reportInfo.userEmail)
+                    .getDocuments()
+                
+                if let userDocument = userDocuments.documents.first {
+                    let userReportsRef = db.collection("users")
+                        .document(userDocument.documentID)
+                        .collection("reports")
+                    
+                    // Find and delete the report reference
+                    let userReportSnapshot = try await userReportsRef
+                        .whereField("reportId", isEqualTo: reportId)
+                        .getDocuments()
+                    
+                    for document in userReportSnapshot.documents {
+                        try await document.reference.delete()
+                        print("Report removed from user's subcollection: \(document.documentID)")
+                    }
+                }
+                
+                // MARK: Removing report from rehabber
+                let userReportsRef = db.collection("users").document(myUserId).collection("reports")
+                
+                // Find and delete the report reference
+                let querySnapshot = try await userReportsRef
+                    .whereField("reportId", isEqualTo: reportId)
+                    .getDocuments()
+                
+                for document in querySnapshot.documents {
+                    try await document.reference.delete()
+                    print("Report reference removed with id: \(document.documentID)")
+                }
+                
+                // MARK: Delete all status documents in the subcollection
+                let statusSnapshot = try await db.collection("reports")
+                    .document(reportId)
+                    .collection("status")
+                    .getDocuments()
+                
+                for statusDoc in statusSnapshot.documents {
+                    try await statusDoc.reference.delete()
+                    print("Status document deleted: \(statusDoc.documentID)")
+                }
+                
+                // MARK: Delete the main report document
+                try await db.collection("reports").document(reportId).delete()
+                
+                print("Report deleted successfully")
+                
+                // Navigate back or show success message
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+                
+            } catch {
+                print("Error deleting report: \(error)")
+                DispatchQueue.main.async {
+                    showAlert(on: self, title: "Error", message: "Failed to delete report")
+                }
+            }
+        }
+    }
 
 }

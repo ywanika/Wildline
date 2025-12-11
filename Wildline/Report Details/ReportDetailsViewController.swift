@@ -156,8 +156,7 @@ class ReportDetailsViewController: UIViewController {
                         reportsDetails.configureForRehabber(nextActionTextLabel: "Claim Report")
                     case nil: // hits when no more updates
                         reportsDetails.configureForRehabber(nextActionTextLabel: "")
-                        reportsDetails.actionButton.isHidden = true
-                        reportsDetails.updateButton.isHidden = true
+                        reportsDetails.configureForViewer()
                     default:
                         reportsDetails.configureForRehabber(nextActionTextLabel: "Send Update: \(nextActionLabel?.rawValue ?? "")")
                         reportsDetails.actionButton.addTarget(self, action: #selector(onUpdateButtonTapped), for: .touchUpInside)
@@ -170,9 +169,8 @@ class ReportDetailsViewController: UIViewController {
         } else if currentUserRole == "user" {
             print("is user")
             reportsDetails.configureForReporter()
-//                    reportsDetails.updateButton.isHidden = true
-//                    reportsDetails.actionButton.isHidden = true
             //TODO give users delete option
+            reportsDetails.updateButton.addTarget(self, action: #selector(onDeleteTapped), for: .touchUpInside)
         } else {
             showAlert(on: self, title: "No User Found", message: "")
         }
@@ -192,6 +190,23 @@ class ReportDetailsViewController: UIViewController {
         withdrawReport()
         reportsDetails.configureForViewer()
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func onDeleteTapped(){
+        let deleteAlert = UIAlertController(
+            title: "Delete Report?",
+            message: "Are you sure you want to DELETE this report?",
+            preferredStyle: .actionSheet
+        )
+        
+        deleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: {(_) in
+            self.deleteReport()
+            self.navigationController?.popViewController(animated: true)
+        }))
+        
+        deleteAlert.addAction(UIAlertAction(title: "Do Not Delete", style: .cancel))
+        
+        self.present(deleteAlert, animated: true)
     }
     
     func updateUIForNextAction() {
