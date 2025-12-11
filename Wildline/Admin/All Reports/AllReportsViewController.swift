@@ -190,7 +190,8 @@ extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: AllReportsTableViewCell.identifier, for: indexPath) as! AllReportsTableViewCell
         let report = reports[indexPath.row]
         cell.titleLabel.text = report.title
-        cell.distanceLabel.text = "0.5 miles" // TODO: calculate distance based on location
+        cell.timeLabel.text = Utilities.relativeString(from: report.createdAt)
+        cell.statusLabel.text = "Unclaimed"
         return cell
     }
     

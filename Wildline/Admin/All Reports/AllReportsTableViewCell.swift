@@ -12,7 +12,8 @@ class AllReportsTableViewCell: UITableViewCell {
 
     var wrapperCellView: UIView!
     var titleLabel: UILabel!
-    var distanceLabel: UILabel!
+    var timeLabel: UILabel!
+//    var distanceLabel: UILabel!
     var statusLabel: UILabel!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -21,7 +22,8 @@ class AllReportsTableViewCell: UITableViewCell {
         
         setupWrapperCellView()
         setupTitleLabel()
-        setupDistanceLabel()
+        setupTimeLabel()
+//        setupDistanceLabel()
         setupStatusLabel()
         
         initConstraints()
@@ -50,13 +52,21 @@ class AllReportsTableViewCell: UITableViewCell {
         wrapperCellView.addSubview(titleLabel)
     }
     
-    func setupDistanceLabel() {
-        distanceLabel = UILabel()
-        distanceLabel.font = UIFont.systemFont(ofSize: 14)
-        distanceLabel.numberOfLines = 0
-        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
-        wrapperCellView.addSubview(distanceLabel)
+    func setupTimeLabel() {
+        timeLabel = UILabel()
+        timeLabel.font = UIFont.systemFont(ofSize: 14)
+        timeLabel.numberOfLines = 0
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        wrapperCellView.addSubview(timeLabel)
     }
+    
+//    func setupDistanceLabel() {
+//        distanceLabel = UILabel()
+//        distanceLabel.font = UIFont.systemFont(ofSize: 14)
+//        distanceLabel.numberOfLines = 0
+//        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
+//        wrapperCellView.addSubview(distanceLabel)
+//    }
     
     func setupStatusLabel() {
         statusLabel = UILabel()
@@ -77,12 +87,12 @@ class AllReportsTableViewCell: UITableViewCell {
             titleLabel.heightAnchor.constraint(equalToConstant: 20),
             titleLabel.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
             
-            distanceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            distanceLabel.leadingAnchor.constraint(equalTo: wrapperCellView.leadingAnchor, constant: 10),
-            distanceLabel.heightAnchor.constraint(equalToConstant: 20),
-            distanceLabel.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
+            timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            timeLabel.leadingAnchor.constraint(equalTo: wrapperCellView.leadingAnchor, constant: 10),
+            timeLabel.heightAnchor.constraint(equalToConstant: 20),
+            timeLabel.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
             
-            statusLabel.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor, constant: 4),
+            statusLabel.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 4),
             statusLabel.leadingAnchor.constraint(equalTo: wrapperCellView.leadingAnchor, constant: 10),
             statusLabel.heightAnchor.constraint(equalToConstant: 20),
             statusLabel.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
