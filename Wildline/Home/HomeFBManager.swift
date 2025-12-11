@@ -62,7 +62,7 @@ extension HomeViewController {
                     statusTypes[reportId] = latestStatus.type
                     
                     // Check if report is closed (Finished)
-                    if latestStatus.type == .Finished {
+                    if latestStatus.type == .Finished || latestStatus.type == .Cancelled {
                         closed.append((report: report, latestStatusTime: latestStatusTime))
                     } else {
                         open.append((report: report, latestStatusTime: latestStatusTime))
