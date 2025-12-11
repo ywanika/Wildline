@@ -60,8 +60,7 @@ extension ReportDetailsViewController{
     }
     
     ///send next status
-    func makeUpdate(){
-        
+    func makeUpdate(message: String){
         guard let unwrappedUpdate = nextActionLabel else{
             print ("No update")
             return
@@ -77,23 +76,10 @@ extension ReportDetailsViewController{
             return
         }
         
-        var message = ""
-        switch (unwrappedUpdate){
-        case UpdateTypes.OTW:
-            message = "is on their way."
-        case UpdateTypes.Arrived:
-            message = "has arrived."
-        case UpdateTypes.Finished:
-            message = "has finished. Thank you!"
-        default:
-            message = "in on the case. There was an error."
-            
-        }
-        
         Task{
             do{
                 let rehabber = try await Utilities.getUser(for: myUserId)
-                let status = Status(type: unwrappedUpdate, message: rehabber.name + " " + message, createdAt: Date())
+                let status = Status(type: unwrappedUpdate, message: message, createdAt: Date())
                 try db.collection("reports")
                     .document(reportId)
                     .collection("status")

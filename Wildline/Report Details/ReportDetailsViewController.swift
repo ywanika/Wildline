@@ -193,7 +193,46 @@ class ReportDetailsViewController: UIViewController {
     }
     
     @objc func onUpdateButtonTapped(){
-        makeUpdate()
+        guard let unwrappedUpdate = nextActionLabel else{
+            print ("No update")
+            return
+        }
+        var rehabberName = reportInfo.adminName
+        var message = ""
+        switch (unwrappedUpdate){
+        case UpdateTypes.OTW:
+            message = rehabberName + " is on their way."
+        case UpdateTypes.Arrived:
+            message = rehabberName + " has arrived."
+        case UpdateTypes.Finished:
+            message = rehabberName + " has finished. Thank you!"
+        default:
+            message = rehabberName + " in on the case. There was an error."
+        }
+        
+        let deleteAlert = UIAlertController(
+            title: "Send '" + UpdateTypes.OTW.rawValue + "' Update",
+            message: "",
+            preferredStyle: .alert
+        )
+        
+        deleteAlert.addTextField { (textField) in
+            textField.text = message
+            textField.keyboardType = .default
+        }
+        
+        deleteAlert.addAction(UIAlertAction(title: "Send", style: .destructive, handler: {(_) in
+            if let textField = deleteAlert.textFields?.first,
+               let text = textField.text {
+                self.makeUpdate(message: text)
+            }
+        }))
+        
+        deleteAlert.addAction(UIAlertAction(title: "Do Not Send", style: .cancel))
+        
+        self.present(deleteAlert, animated: true)
+        
+        
     }
     
     @objc func onWithdrawTapped(){
