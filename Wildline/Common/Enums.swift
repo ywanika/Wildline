@@ -15,8 +15,9 @@ enum UpdateTypes: String, Codable {
     case Claimed = "Claimed"
     case OTW = "OTW"
     case Arrived = "Arrived"
-    case Cancelled = "Cancelled"
+    case Withdrawn = "Withdrawn"
     case Finished = "Finished"
+    case Cancelled = "Cancelled"
 }
 
 let updateOrder: [UpdateTypes] = [UpdateTypes.Created, UpdateTypes.Claimed, UpdateTypes.OTW, UpdateTypes.Arrived, UpdateTypes.Finished]

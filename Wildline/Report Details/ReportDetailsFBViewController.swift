@@ -30,7 +30,7 @@ extension ReportDetailsViewController{
             
             guard let latestStatusDoc = statusSnapshot.documents.first else {
                 print("No status found")
-                nextActionLabel = UpdateTypes.Cancelled
+                nextActionLabel = UpdateTypes.Withdrawn
                 return
             }
             
@@ -47,7 +47,7 @@ extension ReportDetailsViewController{
                     print("Report is already at final status")
                     self.nextActionLabel = nil
                 }
-            } else if latestStatus.type == UpdateTypes.Cancelled {
+            } else if latestStatus.type == UpdateTypes.Withdrawn {
                 self.nextActionLabel = nil
             } else{
                 print("Current status type not found in update order")
@@ -133,7 +133,7 @@ extension ReportDetailsViewController{
                 
                 // MARK: Adding withdrawal status to report
                 let status = Status(
-                    type: UpdateTypes.Cancelled,
+                    type: UpdateTypes.Withdrawn,
                     message: "\(rehabber.name) has withdrawn from this report. Finding a new rehabber!",
                     createdAt: Date()
                 )
@@ -160,6 +160,76 @@ extension ReportDetailsViewController{
             } catch {
                 print("Error withdrawing from report: \(error)")
             }
+        }
+    }
+    
+    func cancelReport() async {
+        guard let reportId = reportInfo.id,
+              let userId = UserToken.shared.getUserId() else {
+            print("Missing report ID or user ID")
+            return
+        }
+        
+        do {
+            // Create a cancelled status
+            let cancelledStatus = Status(
+                type: .Cancelled,
+                message: "Report cancelled by reporter \(reportInfo.createdBy)",
+                createdAt: Date()
+            )
+            
+            // Add the status to Firestore
+            try await db.collection("reports")
+                .document(reportId)
+                .collection("status")
+                .addDocument(from: cancelledStatus)
+            
+            print("Report cancelled successfully")
+            
+            // Update UI and navigate back
+            await MainActor.run {
+                self.reportsDetails.configureForViewer()
+                self.navigationController?.popViewController(animated: true)
+            }
+            
+        } catch {
+            print("Error cancelling report: \(error)")
+            
+            // Show error alert
+            await MainActor.run {
+                let errorAlert = UIAlertController(
+                    title: "Error",
+                    message: "Could not cancel report. Please try again.",
+                    preferredStyle: .alert
+                )
+                errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(errorAlert, animated: true)
+            }
+        }
+    }
+    
+    func checkIfReportClosed() async -> Bool {
+        guard let reportId = reportInfo.id else { return false }
+        
+        do {
+            let statusSnapshot = try await db.collection("reports")
+                .document(reportId)
+                .collection("status")
+                .order(by: "createdAt", descending: true)
+                .limit(to: 1)
+                .getDocuments()
+            
+            if let latestStatusDoc = statusSnapshot.documents.first {
+                let latestStatus = try latestStatusDoc.data(as: Status.self)
+                
+                // Check if report is closed (Cancelled or Finished)
+                return latestStatus.type == .Cancelled || latestStatus.type == .Finished
+            }
+            
+            return false
+        } catch {
+            print("Error checking report status: \(error)")
+            return false
         }
     }
 
