@@ -31,15 +31,11 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         fetchReportsAndLoadAnnotations()
     }
     
-    // MARK: - Core Location Setup
-    
     private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
     }
-    
-    // MARK: - Data Fetching and Annotation
     
     private func fetchReportsAndLoadAnnotations() {
         Task {
@@ -71,14 +67,9 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         }
     }
     
-    // MARK: - MKMapViewDelegate (Pin Tapping/Navigation/Address)
-    
-    // REQUIRED: Performs reverse geocoding to find and set the addressSubtitle on the annotation
-    // This function must only appear once in this file.
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let annotation = view.annotation as? ReportAnnotation else { return }
         
-        // Use CLGeocoder asynchronously to get the address
         let location = CLLocation(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)
         CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
             var addressString: String = "Address not found"
@@ -88,11 +79,9 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
                     .compactMap { $0 }
                     .joined(separator: ", ")
                 
-                // Set the address on the custom annotation object
                 annotation.addressSubtitle = addressString
             }
             
-            // Re-select the pin to force the callout to refresh with the new subtitle
             if view.isSelected {
                 mapView.deselectAnnotation(annotation, animated: false)
                 mapView.selectAnnotation(annotation, animated: false)
@@ -100,21 +89,19 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         }
     }
     
-    // REQUIRED: Clears the address when the pin is deselected
-    // This function must only appear once in this file.
     func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
         if let annotation = view.annotation as? ReportAnnotation {
             annotation.addressSubtitle = nil
         }
     }
 
-    // Handles the tap on the disclosure button for QuickLook navigation
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         guard let annotation = view.annotation as? ReportAnnotation,
               control == view.rightCalloutAccessoryView else { return }
         
         let quickLookVC = QuickLookViewController()
-        // quickLookVC.report = annotation.report
+        
+        quickLookVC.reportInfo = annotation.report
         
         self.navigationController?.pushViewController(quickLookVC, animated: true)
         
@@ -141,8 +128,6 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         return pinView
     }
     
-    // MARK: - CLLocationManagerDelegate (Centering Map on User)
-
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
             reportsMapView.mapView.showsUserLocation = true

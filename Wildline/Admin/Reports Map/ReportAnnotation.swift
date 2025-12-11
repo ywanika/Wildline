@@ -12,7 +12,6 @@ class ReportAnnotation: NSObject, MKAnnotation {
     
     let report: Report
     
-    // NEW: Property to hold the address after reverse geocoding
     var addressSubtitle: String?
     
     var coordinate: CLLocationCoordinate2D {
@@ -25,7 +24,6 @@ class ReportAnnotation: NSObject, MKAnnotation {
         return report.title
     }
     
-    // MODIFIED: Use override and conditionally display the fetched address
         var subtitle: String? {
         let baseSubtitle = "Report from: \(report.createdBy)"
         

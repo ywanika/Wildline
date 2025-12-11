@@ -1,13 +1,14 @@
 //
-//  QuickLookViewController.swift
-//  Wildline
+//  QuickLookViewController.swift
+//  Wildline
 //
-//  Created by Anika Sharma on 11/17/25.
+//  Created by Anika Sharma on 11/17/25.
 //
 
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
+import MapKit
 
 class QuickLookViewController: UIViewController {
     let db = Firestore.firestore()
@@ -23,6 +24,8 @@ class QuickLookViewController: UIViewController {
         quickLookView.descriptionLabel.text = reportInfo.description
         quickLookView.reporterNameLabel.text = reportInfo.createdBy
         
+        reverseGeocodeLocation()
+        
         if reportInfo.adminName == nil || reportInfo.adminName?.isEmpty == true {
             quickLookView.claimReportButton.isHidden = false
             quickLookView.claimReportButton.addTarget(self, action: #selector(onClaimReportButtonTapped), for: .touchUpInside)
@@ -36,6 +39,26 @@ class QuickLookViewController: UIViewController {
         super.viewDidLoad()
     }
     
+    func reverseGeocodeLocation() {
+        let location = CLLocation(latitude: reportInfo.location.latitude, longitude: reportInfo.location.longitude)
+        
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] (placemarks, error) in
+            guard let self = self else { return }
+            
+            var addressString: String = "Location Address Not Found"
+            
+            if let placemark = placemarks?.first {
+                addressString = [placemark.thoroughfare, placemark.locality, placemark.administrativeArea]
+                    .compactMap { $0 }
+                    .joined(separator: ", ")
+            }
+            
+            DispatchQueue.main.async {
+                            self.quickLookView.updateLocationDisplay(address: addressString, distance: nil)
+                        }
+        }
+    }
+
     @objc func onClaimReportButtonTapped() {
         claimReport()
         quickLookView.claimReportButton.isHidden = true

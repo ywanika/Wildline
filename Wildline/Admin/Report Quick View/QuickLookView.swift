@@ -1,8 +1,8 @@
 //
-//  QuickLookView.swift
-//  Wildline
+//  QuickLookView.swift
+//  Wildline
 //
-//  Created by Anika Sharma on 11/16/25.
+//  Created by Anika Sharma on 11/16/25.
 //
 
 import UIKit
@@ -23,8 +23,7 @@ class QuickLookView: UIView {
         super.init(frame: frame)
         
         self.backgroundColor = .white
-                
-        //MARK: initializing the UI elements and constraints...
+            
         setupScrollView()
         setupContentView()
         setupReporterNameLabel()
@@ -36,6 +35,15 @@ class QuickLookView: UIView {
         
         initConstraints()
         
+    }
+    
+    func updateLocationDisplay(address: String, distance: String?) {
+        var locationText = address
+        if let distanceText = distance {
+            locationText += " • \(distanceText)"
+        }
+        locationLabel.text = locationText
+        locationLabel.textColor = .systemGreen
     }
     
     func setupScrollView() {
