@@ -41,15 +41,33 @@ extension QuickLookViewController {
                 ])
                 
                 // MARK: Adding status to report
-                var status = Status(type: UpdateTypes.Clamied, message: "\(rehabber.name) has claimed this report!", createdAt: Date())
+                var status = Status(type: UpdateTypes.Claimed, message: "\(rehabber.name) has claimed this report!", createdAt: Date())
                 try db.collection("reports")
                     .document(reportId)
                     .collection("status")
                     .addDocument(from: status)
                 
-                // MARK: Adding rehabber to report
+                // MARK: Adding report to rehaber
+                let reportRef = ReportRef(reportId: reportId)
+                
+                let userReports = db.collection("users").document(myUserId).collection("reports")
+                
+                do{
+                    let result = try userReports.addDocument(from: reportRef) {error in
+                        if let error = error {
+                            return
+                        }
+                        
+                    }
+                    
+                    print("reportRef added with id: \(result.documentID)")
+                    
+                }catch{
+                    print("Error adding report!")
+                }
                 
                 print("Report claimed successfully")
+//                addReportToUser(reportId: reportId, userId: myUserId)
                 
             } catch {
                 print("Error claiming report: \(error)")
@@ -57,4 +75,34 @@ extension QuickLookViewController {
         }
         
     }
+    
+//    func addReportToUser(reportId: String, userId: String) {
+//        guard !reportId.isEmpty, !userId.isEmpty else {
+//            print("Error: reportId or userId is empty")
+//            print("reportId: '\(reportId)', userId: '\(userId)'")
+//            return
+//        }
+//        
+//        let reportRef = ReportRef(reportId: reportId)
+//        
+//        let userReports = db.collection("users").document(userId).collection("reports")
+//        
+//        do{
+//            let result = try userReports.addDocument(from: reportRef) {error in
+//                if let error = error {
+//                    //MARK: hide progress indicator...
+////                    self.hideActivityIndicator()
+//                    
+////                    self.navigationController?.popViewController(animated: true)
+//                    return
+//                }
+//                
+//            }
+//            
+//            print("reportRef added with id: \(result.documentID)")
+//            
+//        }catch{
+//            print("Error adding report!")
+//        }
+//    }
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 
 let ACCENT_COLOR = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
 
@@ -18,10 +19,12 @@ class ReportDetailsView: UIView {
     var reporterNameLabel: UILabel!
     var reporterPhoneLabel: UILabel!
     
+    var rehabberInfoLabel: UILabel!
+    var rehabberNameLabel: UILabel!
+    var rehabberPhoneLabel: UILabel!
+    
     var descriptionLabel: UILabel!
     var descriptionTextView: UITextView!
-    
-    var showLessButton: UIButton!
     
     var timelineLabel: UILabel!
     var timelineStackView: UIStackView!
@@ -31,6 +34,9 @@ class ReportDetailsView: UIView {
     var scrollView: UIScrollView!
     var contentView: UIView!
     
+    var mapPreview: MKMapView!
+    var mapButton: UIButton!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -39,12 +45,35 @@ class ReportDetailsView: UIView {
         setupScrollView()
         setupHeader()
         setupReporterInfo()
+        setupRehabberInfo()
         setupDescription()
-        setupShowLessButton()
         setupTimeline()
         setupActionButton()
         
+        setupMapPreview()
+        setupMapButton()
+        
+        
         initConstraints()
+    }
+    
+    func setupMapPreview() {
+        mapPreview = MKMapView()
+        mapPreview.isUserInteractionEnabled = false
+        mapPreview.layer.cornerRadius = 12
+        mapPreview.layer.borderWidth = 1.5
+        mapPreview.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        mapPreview.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapPreview)
+    }
+    
+    func setupMapButton() {
+        mapButton = UIButton(type: .system)
+        mapButton.setTitle("", for: .normal)
+        mapButton.backgroundColor = .clear
+        
+        mapButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapButton)
     }
     
     func setupScrollView() {
@@ -58,15 +87,11 @@ class ReportDetailsView: UIView {
     }
     
     func setupHeader() {
-        titleLabel = UILabel()
-        titleLabel.text = "Report Title"
-        titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        titleLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel = createStyledTitleLabel(title: "Title")
         contentView.addSubview(titleLabel)
         
         updateButton = UIButton(type: .system)
-        updateButton.setTitle("Update", for: .normal)
+        updateButton.setTitle("Delete", for: .normal)
         updateButton.setTitleColor(.white, for: .normal)
         updateButton.backgroundColor = ACCENT_COLOR
         updateButton.layer.borderWidth = 0
@@ -102,6 +127,27 @@ class ReportDetailsView: UIView {
         contentView.addSubview(reporterPhoneLabel)
     }
     
+    func setupRehabberInfo() {
+        rehabberInfoLabel = UILabel()
+        rehabberInfoLabel.text = "Reporter Info"
+        rehabberInfoLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        rehabberInfoLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
+        rehabberInfoLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(rehabberInfoLabel)
+        
+        rehabberNameLabel = UILabel()
+        rehabberNameLabel.text = "Alice A."
+        rehabberNameLabel.font = .preferredFont(forTextStyle: .body)
+        rehabberNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(rehabberNameLabel)
+        
+        rehabberPhoneLabel = UILabel()
+        rehabberPhoneLabel.text = "012-345-6789"
+        rehabberPhoneLabel.font = .preferredFont(forTextStyle: .body)
+        rehabberPhoneLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(rehabberPhoneLabel)
+    }
+    
     func setupDescription() {
         descriptionLabel = UILabel()
         descriptionLabel.text = "Description of the report"
@@ -122,17 +168,9 @@ class ReportDetailsView: UIView {
         contentView.addSubview(descriptionTextView)
     }
     
-    func setupShowLessButton() {
-        showLessButton = UIButton(type: .system)
-        showLessButton.setTitle("^ show less", for: .normal)
-        showLessButton.setTitleColor(ACCENT_COLOR, for: .normal)
-        showLessButton.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(showLessButton)
-    }
-    
     func setupTimeline() {
         timelineLabel = UILabel()
-        timelineLabel.text = "will implement later - Ciara"
+        timelineLabel.text = "Live Updates"
         timelineLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         timelineLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         timelineLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -140,45 +178,30 @@ class ReportDetailsView: UIView {
         
         timelineStackView = UIStackView()
         timelineStackView.axis = .vertical
-        timelineStackView.spacing = 16
+        timelineStackView.spacing = 4
         timelineStackView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(timelineStackView)
     }
     
     func setupActionButton() {
-        actionButton = UIButton(type: .system)
-        actionButton.setTitle("Action", for: .normal)
-        actionButton.setTitleColor(ACCENT_COLOR, for: .normal)
-        actionButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        actionButton.layer.borderWidth = 2.5
-        actionButton.layer.borderColor = ACCENT_COLOR.cgColor
-        actionButton.layer.cornerRadius = 14
-        actionButton.contentEdgeInsets = UIEdgeInsets(top: 14, left: 0, bottom: 14, right: 0)
-        actionButton.layer.shadowColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 0.15).cgColor
-        actionButton.layer.shadowOffset = CGSize(width: 0, height: 3)
-        actionButton.layer.shadowRadius = 6
-        actionButton.layer.shadowOpacity = 1.0
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        actionButton = createStyledPrimaryButton(title: "action")
         contentView.addSubview(actionButton)
     }
     
-    func configureForRehabber() {
-        actionButton.setTitle("Withdraw Claim", for: .normal)
-        actionButton.setTitleColor(.systemPurple, for: .normal)
-        actionButton.layer.borderColor = UIColor.systemPurple.cgColor
+    func configureForRehabber(nextActionTextLabel: String) {
+        actionButton.isHidden = false
+        actionButton.setTitle(nextActionTextLabel, for: .normal)
+        
+        updateButton.setTitle("Withdraw Claim", for: .normal)
         updateButton.isHidden = false
     }
     
-    func configureForReporter(isClaimed: Bool) {
-        if isClaimed {
-            actionButton.setTitle("Cancel Report", for: .normal)
-            actionButton.setTitleColor(.systemRed, for: .normal)
-            actionButton.layer.borderColor = UIColor.systemRed.cgColor
-        } else {
-            actionButton.setTitle("Delete Report", for: .normal)
-            actionButton.setTitleColor(.systemRed, for: .normal)
-            actionButton.layer.borderColor = UIColor.systemRed.cgColor
-        }
+    func configureForReporter() {
+        // TODO
+//        actionButton.setTitle("Delete Report", for: .normal)
+//        actionButton.setTitleColor(.systemRed, for: .normal)
+//        actionButton.layer.borderColor = UIColor.systemRed.cgColor
+        actionButton.isHidden = true
         updateButton.isHidden = true
     }
     
@@ -187,10 +210,16 @@ class ReportDetailsView: UIView {
         updateButton.isHidden = true
     }
     
-    func addTimelineEvent(title: String, description: String, isExpanded: Bool = false) {
-        let eventView = TimelineEventView(title: title, description: description, isExpanded: isExpanded)
-        timelineStackView.addArrangedSubview(eventView)
+    func configureForUnclaimed() {
+        rehabberInfoLabel.isHidden = true
+        rehabberNameLabel.isHidden = true
+        rehabberPhoneLabel.isHidden = true
     }
+    
+//    func addTimelineEvent(title: String, description: String, isExpanded: Bool = false) {
+//        let eventView = TimelineEventView(title: title, description: description, isExpanded: isExpanded)
+//        timelineStackView.addArrangedSubview(eventView)
+//    }
     
     func initConstraints() {
         NSLayoutConstraint.activate([
@@ -220,6 +249,15 @@ class ReportDetailsView: UIView {
             reporterPhoneLabel.topAnchor.constraint(equalTo: reporterNameLabel.bottomAnchor, constant: 2),
             reporterPhoneLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
+            rehabberInfoLabel.topAnchor.constraint(equalTo: reporterInfoLabel.topAnchor),
+            rehabberInfoLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            rehabberNameLabel.topAnchor.constraint(equalTo: reporterNameLabel.topAnchor),
+            rehabberNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            rehabberPhoneLabel.topAnchor.constraint(equalTo: reporterPhoneLabel.topAnchor),
+            rehabberPhoneLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
             descriptionLabel.topAnchor.constraint(equalTo: reporterPhoneLabel.bottomAnchor, constant: 16),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -228,10 +266,17 @@ class ReportDetailsView: UIView {
             descriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            showLessButton.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 4),
-            showLessButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            mapPreview.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 16),
+            mapPreview.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            mapPreview.widthAnchor.constraint(equalToConstant: 250),
+            mapPreview.heightAnchor.constraint(equalToConstant: 150),
             
-            timelineLabel.topAnchor.constraint(equalTo: showLessButton.bottomAnchor, constant: 24),
+            mapButton.topAnchor.constraint(equalTo: mapPreview.topAnchor),
+            mapButton.leadingAnchor.constraint(equalTo: mapPreview.leadingAnchor),
+            mapButton.trailingAnchor.constraint(equalTo: mapPreview.trailingAnchor),
+            mapButton.bottomAnchor.constraint(equalTo: mapPreview.bottomAnchor),
+            
+            timelineLabel.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 24),
             timelineLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             timelineStackView.topAnchor.constraint(equalTo: timelineLabel.bottomAnchor, constant: 12),
@@ -256,23 +301,30 @@ class TimelineEventView: UIView {
     var lineView: UIView!
     var titleLabel: UILabel!
     var descriptionLabel: UILabel!
+    var timestampLabel: UILabel!
     var expandButton: UIButton!
+    var isLastItem: Bool = false
     
-    init(title: String, description: String, isExpanded: Bool = false) {
+    init(status: Status, isExpanded: Bool = false, isLastItem: Bool = false) {
+        self.isLastItem = isLastItem
         super.init(frame: .zero)
         
         setupCircleView()
         setupLineView()
-        setupTitleLabel(title: title)
-        setupDescriptionLabel(description: description, isExpanded: isExpanded)
-        setupExpandButton()
+        setupTitleLabel(title: status.type.rawValue)
+        setupTimestampLabel(date: status.createdAt)
+        setupDescriptionLabel(description: status.message, isExpanded: isExpanded)
+        
+        if needsExpandButton(description: status.message) {
+            setupExpandButton()
+        }
         
         initConstraints()
     }
     
     func setupCircleView() {
         circleView = UIView()
-        circleView.backgroundColor = UIColor(red: 0.2, green: 0.6, blue: 0.35, alpha: 1.0)
+        circleView.backgroundColor = ACCENT_COLOR
         circleView.layer.cornerRadius = 8
         circleView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(circleView)
@@ -282,7 +334,10 @@ class TimelineEventView: UIView {
         lineView = UIView()
         lineView.backgroundColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 0.4)
         lineView.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(lineView)
+        
+        if !isLastItem {
+            self.addSubview(lineView)
+        }
     }
     
     func setupTitleLabel(title: String) {
@@ -295,6 +350,15 @@ class TimelineEventView: UIView {
         self.addSubview(titleLabel)
     }
     
+    func setupTimestampLabel(date: Date) {
+        timestampLabel = UILabel()
+        timestampLabel.text = Utilities.relativeString(from: date)
+        timestampLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        timestampLabel.textColor = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0)
+        timestampLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(timestampLabel)
+    }
+    
     func setupDescriptionLabel(description: String, isExpanded: Bool) {
         descriptionLabel = UILabel()
         descriptionLabel.text = description
@@ -305,39 +369,100 @@ class TimelineEventView: UIView {
         self.addSubview(descriptionLabel)
     }
     
+    func needsExpandButton(description: String) -> Bool {
+        // Check if description is long enough to need expansion
+        let maxLength = 100
+        return description.count > maxLength
+    }
+    
     func setupExpandButton() {
         expandButton = UIButton(type: .system)
         expandButton.setTitle("More details ✓", for: .normal)
         expandButton.setTitleColor(ACCENT_COLOR, for: .normal)
         expandButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .medium)
+        expandButton.addTarget(self, action: #selector(toggleExpand), for: .touchUpInside)
         expandButton.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(expandButton)
     }
     
+    @objc func toggleExpand() {
+        let isExpanded = descriptionLabel.numberOfLines == 0
+        descriptionLabel.numberOfLines = isExpanded ? 2 : 0
+        expandButton.setTitle(isExpanded ? "Show more" : "Show less", for: .normal)
+        
+        // Animate the change
+        UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
+        }
+    }
+    
     func initConstraints() {
-        NSLayoutConstraint.activate([
+//        NSLayoutConstraint.activate([
+//            circleView.topAnchor.constraint(equalTo: self.topAnchor),
+//            circleView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+//            circleView.widthAnchor.constraint(equalToConstant: 16),
+//            circleView.heightAnchor.constraint(equalToConstant: 16),
+//            
+//            lineView.topAnchor.constraint(equalTo: circleView.bottomAnchor),
+//            lineView.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
+//            lineView.widthAnchor.constraint(equalToConstant: 2),
+//            lineView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+//            
+//            titleLabel.topAnchor.constraint(equalTo: self.topAnchor),
+//            titleLabel.leadingAnchor.constraint(equalTo: circleView.trailingAnchor, constant: 12),
+//            titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+//            
+//            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+//            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+//            descriptionLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+//            
+//            expandButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 2),
+//            expandButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+//            expandButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
+//        ])
+        var constraints = [
             circleView.topAnchor.constraint(equalTo: self.topAnchor),
             circleView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             circleView.widthAnchor.constraint(equalToConstant: 16),
             circleView.heightAnchor.constraint(equalToConstant: 16),
             
-            lineView.topAnchor.constraint(equalTo: circleView.bottomAnchor),
-            lineView.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
-            lineView.widthAnchor.constraint(equalToConstant: 2),
-            lineView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            
             titleLabel.topAnchor.constraint(equalTo: self.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: circleView.trailingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             
-            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            timestampLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 2),
+            timestampLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            timestampLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: timestampLabel.bottomAnchor, constant: 4),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            
-            expandButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 2),
-            expandButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            expandButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
-        ])
+        ]
+        
+        // Add line constraints if not last item
+        if !isLastItem {
+            constraints.append(contentsOf: [
+                lineView.topAnchor.constraint(equalTo: circleView.bottomAnchor, constant: 2),
+                lineView.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
+                lineView.widthAnchor.constraint(equalToConstant: 2),
+                lineView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            ])
+        }
+        
+        // Add expand button constraints if it exists
+        if expandButton != nil {
+            constraints.append(contentsOf: [
+                expandButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 2),
+                expandButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+                expandButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4)
+            ])
+        } else {
+            constraints.append(
+                descriptionLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4)
+            )
+        }
+        
+        NSLayoutConstraint.activate(constraints)
     }
     
     required init?(coder: NSCoder) {

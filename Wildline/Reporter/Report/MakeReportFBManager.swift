@@ -24,12 +24,20 @@ extension MakeReportViewController {
                 
             }
             
+            var status = Status(type: UpdateTypes.Created, message: "Report Created", createdAt: Date())
+            try db.collection("reports")
+                .document(result.documentID)
+                .collection("status")
+                .addDocument(from: status)
+            
             // if successful, then add to user's collection of reportIds
             addReportToUser(reportId: result.documentID, userId: userId)
             
             print("report added with id: \(result.documentID)")
             
-            
+            let newReport = try await Utilities.getReport(for: result.documentID)
+            redirectToReportDetails(report: newReport)
+
         }catch{
             print("Error adding report!")
         }
@@ -68,5 +76,12 @@ extension MakeReportViewController {
         }catch{
             print("Error adding report!")
         }
+    }
+    
+    func redirectToReportDetails(report: Report) {
+        let vc = ReportDetailsViewController()
+        
+        vc.reportInfo = report
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

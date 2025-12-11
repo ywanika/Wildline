@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 import FirebaseAuth
 import FirebaseFirestore
 import MapKit
@@ -21,12 +22,13 @@ class QuickLookViewController: UIViewController {
         view = quickLookView
         
         quickLookView.titleLabel.text = reportInfo.title
-        quickLookView.descriptionLabel.text = reportInfo.description
-        quickLookView.reporterNameLabel.text = reportInfo.createdBy
+        quickLookView.descriptionTextView.text = reportInfo.description
+        quickLookView.reporterNameLabel.text = "Reported By: \(reportInfo.createdBy)"
         
         reverseGeocodeLocation()
         
         if reportInfo.adminName == nil || reportInfo.adminName?.isEmpty == true {
+        if reportInfo.adminName.isEmpty == true || reportInfo.adminName == "" {
             quickLookView.claimReportButton.isHidden = false
             quickLookView.claimReportButton.addTarget(self, action: #selector(onClaimReportButtonTapped), for: .touchUpInside)
         } else {
@@ -37,6 +39,7 @@ class QuickLookViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addPin()
     }
     
     func reverseGeocodeLocation() {
@@ -62,6 +65,27 @@ class QuickLookViewController: UIViewController {
     @objc func onClaimReportButtonTapped() {
         claimReport()
         quickLookView.claimReportButton.isHidden = true
+        navigationController?.popViewController(animated: true)
+    }
+    
+    private func addPin() {
+        let coordinate = CLLocationCoordinate2D(
+            latitude: reportInfo.location.latitude,
+            longitude: reportInfo.location.longitude
+        )
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = "Report Location"
+        
+        quickLookView.mapPreview.addAnnotation(annotation)
+        
+        // Center and zoom the map on the pin
+        let region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+        )
+        quickLookView.mapPreview.setRegion(region, animated: false)
     }
 
 }

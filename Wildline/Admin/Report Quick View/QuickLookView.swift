@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 
 class QuickLookView: UIView {
 
@@ -13,11 +14,14 @@ class QuickLookView: UIView {
     var contentView: UIView!
     
     var reporterNameLabel: UILabel!
-    var reporterPictureButton: UIButton!
     var titleLabel: UILabel!
     var locationLabel: UILabel!
     var descriptionLabel: UILabel!
+    var descriptionTextView: UITextView!
     var claimReportButton: UIButton!
+    
+    var mapPreview: MKMapView!
+    var mapButton: UIButton!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,14 +31,36 @@ class QuickLookView: UIView {
         setupScrollView()
         setupContentView()
         setupReporterNameLabel()
-        setupReporterPictureButton()
         setupTitleLabel()
         setupLocationLabel()
         setupDescriptionLabel()
+        setupDescriptionTextView()
         setupClaimReportButton()
         
-        initConstraints()
+        setupMapPreview()
+        setupMapButton()
         
+        
+        initConstraints()
+    }
+    
+    func setupMapPreview() {
+        mapPreview = MKMapView()
+        mapPreview.isUserInteractionEnabled = false
+        mapPreview.layer.cornerRadius = 12
+        mapPreview.layer.borderWidth = 1.5
+        mapPreview.layer.borderColor = UIColor(red: 0.5, green: 0.75, blue: 0.5, alpha: 1.0).cgColor
+        mapPreview.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapPreview)
+    }
+    
+    func setupMapButton() {
+        mapButton = UIButton(type: .system)
+        mapButton.setTitle("", for: .normal)
+        mapButton.backgroundColor = .clear
+        
+        mapButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(mapButton)
     }
     
     func updateLocationDisplay(address: String, distance: String?) {
@@ -67,23 +93,8 @@ class QuickLookView: UIView {
         contentView.addSubview(reporterNameLabel)
     }
     
-    func setupReporterPictureButton() {
-        reporterPictureButton = UIButton(type: .system)
-        reporterPictureButton.setTitle("", for: .normal)
-        reporterPictureButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
-        reporterPictureButton.contentHorizontalAlignment = .fill
-        reporterPictureButton.contentVerticalAlignment = .fill
-        reporterPictureButton.imageView?.contentMode = .scaleAspectFit
-        reporterPictureButton.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(reporterPictureButton)
-    }
-    
     func setupTitleLabel() {
-        titleLabel = UILabel()
-        titleLabel.text = "Title"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        titleLabel.numberOfLines = 0
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel = createStyledTitleLabel(title: "Title")
         contentView.addSubview(titleLabel)
     }
     
@@ -98,12 +109,13 @@ class QuickLookView: UIView {
     }
     
     func setupDescriptionLabel() {
-        descriptionLabel = UILabel()
-        descriptionLabel.text = "Description"
-        descriptionLabel.font = UIFont.systemFont(ofSize: 16)
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel = createStyledSubtitle(subtitle: "Description")
         contentView.addSubview(descriptionLabel)
+    }
+    
+    func setupDescriptionTextView() {
+        descriptionTextView = createStyledTextView(message: "Description")
+        contentView.addSubview(descriptionTextView)
     }
     
     func setupClaimReportButton() {
@@ -125,13 +137,8 @@ class QuickLookView: UIView {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            reporterPictureButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            reporterPictureButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            reporterPictureButton.widthAnchor.constraint(equalToConstant: 40),
-            reporterPictureButton.heightAnchor.constraint(equalToConstant: 40),
-            
-            reporterNameLabel.centerYAnchor.constraint(equalTo: reporterPictureButton.centerYAnchor),
-            reporterNameLabel.trailingAnchor.constraint(equalTo: reporterPictureButton.leadingAnchor, constant: -8),
+            reporterNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            reporterNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             reporterNameLabel.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 20),
             
             titleLabel.topAnchor.constraint(equalTo: reporterNameLabel.bottomAnchor, constant: 20),
@@ -142,11 +149,25 @@ class QuickLookView: UIView {
             locationLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            descriptionLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 12),
+            mapPreview.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 16),
+            mapPreview.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            mapPreview.widthAnchor.constraint(equalToConstant: 300),
+            mapPreview.heightAnchor.constraint(equalToConstant: 250),
+            
+            mapButton.topAnchor.constraint(equalTo: mapPreview.topAnchor),
+            mapButton.leadingAnchor.constraint(equalTo: mapPreview.leadingAnchor),
+            mapButton.trailingAnchor.constraint(equalTo: mapPreview.trailingAnchor),
+            mapButton.bottomAnchor.constraint(equalTo: mapPreview.bottomAnchor),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: mapButton.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            claimReportButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 30),
+            descriptionTextView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
+            descriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            descriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            claimReportButton.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: 30),
             claimReportButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             claimReportButton.widthAnchor.constraint(equalToConstant: 200),
             claimReportButton.heightAnchor.constraint(equalToConstant: 44),
