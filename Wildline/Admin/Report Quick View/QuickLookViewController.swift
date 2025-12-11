@@ -17,6 +17,7 @@ class QuickLookViewController: UIViewController {
     var quickLookView = QuickLookView()
     var reportInfo: Report!
     var currentUser:FirebaseAuth.User?
+    let notificationCenter = NotificationCenter.default
     
     override func loadView(){
         view = quickLookView
@@ -27,7 +28,6 @@ class QuickLookViewController: UIViewController {
         
         reverseGeocodeLocation()
         
-        if reportInfo.adminName == nil || reportInfo.adminName?.isEmpty == true {
         if reportInfo.adminName.isEmpty == true || reportInfo.adminName == "" {
             quickLookView.claimReportButton.isHidden = false
             quickLookView.claimReportButton.addTarget(self, action: #selector(onClaimReportButtonTapped), for: .touchUpInside)
@@ -65,6 +65,11 @@ class QuickLookViewController: UIViewController {
     @objc func onClaimReportButtonTapped() {
         claimReport()
         quickLookView.claimReportButton.isHidden = true
+        
+        print("about to send notif")
+        notificationCenter.post(name: Notification.Name("reloadReports"), object: nil)
+        print("should have sent notif")
+        
         navigationController?.popViewController(animated: true)
     }
     

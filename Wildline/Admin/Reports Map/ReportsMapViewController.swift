@@ -16,6 +16,8 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
     
     private var locationManager = CLLocationManager()
     private var reports: [Report] = []
+    private var geocodingTimer: Timer?
+    let notificationCenter = NotificationCenter.default
 
     override func loadView() {
         view = reportsMapView
@@ -29,6 +31,39 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         setupLocationManager()
         
         fetchReportsAndLoadAnnotations()
+        
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(notificationReceivedForReportRefresh(notification:)),
+            name: Notification.Name("reloadReports"),
+            object: nil
+        )
+    }
+    
+    @MainActor
+    private func forceMapRefresh() {
+        // Remove all annotations
+        let allAnnotations = reportsMapView.mapView.annotations
+        reportsMapView.mapView.removeAnnotations(allAnnotations)
+        
+        // Force the map to update
+        reportsMapView.mapView.setNeedsDisplay()
+        
+        // Re-add annotations on next run loop
+        DispatchQueue.main.async { [weak self] in
+            self?.addReportAnnotations()
+        }
+    }
+    
+    @MainActor
+    @objc func notificationReceivedForReportRefresh(notification: Notification) {
+        
+        fetchReportsAndLoadAnnotations()
+        
+        // Force refresh after a short delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.forceMapRefresh()
+        }
     }
     
     private func setupLocationManager() {
@@ -37,11 +72,12 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         locationManager.requestWhenInUseAuthorization()
     }
     
+    @MainActor
     private func fetchReportsAndLoadAnnotations() {
         Task {
             do {
                 let db = Firestore.firestore()
-                let snapshot = try await db.collection("reports").getDocuments()
+                let snapshot = try await db.collection("reports").whereField("adminName", in: [NSNull(), ""]).getDocuments()
                 
                 self.reports = snapshot.documents.compactMap { doc in
                     try? doc.data(as: Report.self)
@@ -54,6 +90,7 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         }
     }
     
+    @MainActor
     private func addReportAnnotations() {
         reportsMapView.mapView.removeAnnotations(reportsMapView.mapView.annotations)
         
@@ -63,30 +100,16 @@ class ReportsMapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         }
         
         if !reports.isEmpty {
-            reportsMapView.mapView.showAnnotations(reportsMapView.mapView.annotations, animated: true)
+            // Get only the ReportAnnotation objects (exclude user location)
+            let reportAnnotations = reportsMapView.mapView.annotations.filter { $0 is ReportAnnotation }
+            reportsMapView.mapView.showAnnotations(reportAnnotations, animated: true)
         }
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        // Don't geocode at all - just show the report info
         guard let annotation = view.annotation as? ReportAnnotation else { return }
-        
-        let location = CLLocation(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)
-        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-            var addressString: String = "Address not found"
-            
-            if let placemark = placemarks?.first {
-                addressString = [placemark.thoroughfare, placemark.locality, placemark.administrativeArea]
-                    .compactMap { $0 }
-                    .joined(separator: ", ")
-                
-                annotation.addressSubtitle = addressString
-            }
-            
-            if view.isSelected {
-                mapView.deselectAnnotation(annotation, animated: false)
-                mapView.selectAnnotation(annotation, animated: false)
-            }
-        }
+        print("Selected report: \(annotation.report.title)")
     }
     
     func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {

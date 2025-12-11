@@ -11,9 +11,7 @@ import FirebaseFirestore
 class ReportAnnotation: NSObject, MKAnnotation {
     
     let report: Report
-    
     var addressSubtitle: String?
-    
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(
             latitude: report.location.latitude,
@@ -24,18 +22,18 @@ class ReportAnnotation: NSObject, MKAnnotation {
         return report.title
     }
     
-        var subtitle: String? {
-        let baseSubtitle = "Report from: \(report.createdBy)"
-        
-        if let address = addressSubtitle {
-            return "\(baseSubtitle)\n\(address)"
-        }
-        
-        return baseSubtitle
-    }
+    let subtitle: String?
+//    let baseSubtitle = "Report from: \(report.createdBy)"
+//    
+//    if let address = addressSubtitle {
+//        return "\(baseSubtitle)\n\(address)"
+//    }
+//    
+//    return baseSubtitle
     
     init(report: Report) {
         self.report = report
+        self.subtitle = "Report from: \(report.createdBy)"
         super.init()
     }
 }

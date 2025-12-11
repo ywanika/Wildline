@@ -29,6 +29,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         setupUI()
         addLongPressGesture()
         setupLocationManager()
@@ -247,12 +248,33 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
             pinView?.canShowCallout = true
             pinView?.animatesDrop = true
-            pinView?.isDraggable = true
+            pinView?.isDraggable = false
             pinView?.pinTintColor = UIColor(red: 0.8, green: 0.1, blue: 0.1, alpha: 1.0)
+            
+            let infoButton = UIButton(type: .detailDisclosure)
+            pinView?.rightCalloutAccessoryView = infoButton
         } else {
             pinView?.annotation = annotation
         }
         return pinView
+    }
+    
+    // Add this new delegate method to handle the info button tap
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        print("Info button tapped!") // Debug print
+
+        guard let reportAnnotation = view.annotation as? ReportAnnotation else {
+            print("Failed to cast annotation")
+            return
+        }
+        
+        print("Report: \(reportAnnotation.report.title)") // Debug print
+
+        
+        // Navigate to the report details screen
+        let detailVC = ReportDetailsViewController()
+        detailVC.reportInfo = reportAnnotation.report
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {

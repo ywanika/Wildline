@@ -55,9 +55,6 @@ class AllReportsViewController: UIViewController {
                     self.reports.sort(by: { $0.createdAt > $1.createdAt })
                     
                     print("Loaded \(self.reports.count) reports")
-                    for report in self.reports {
-                        print(report)
-                    }
                     
                     self.allReportsView.reportsTable.reloadData()
                 })
@@ -80,7 +77,6 @@ class AllReportsViewController: UIViewController {
         allReportsView.reportsTable.delegate = self
         allReportsView.reportsTable.dataSource = self
     }
-
 }
 
 extension AllReportsViewController: UITableViewDataSource, UITableViewDelegate {
