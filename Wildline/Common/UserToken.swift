@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 class UserToken {
     static let shared = UserToken()
@@ -13,6 +14,7 @@ class UserToken {
     
     private let currentUserId = "currentUserId"
     private let currentUserRole = "currentUserRole"
+    private let homeLocation = "homeLocation"
     let defaults = UserDefaults.standard
     
     // Save token
@@ -42,9 +44,22 @@ class UserToken {
         defaults.removeObject(forKey: currentUserRole)
     }
     
+    func saveHomeLocation(_ token: GeoPoint) {
+        defaults.set(token, forKey: homeLocation)
+    }
+    
+    func getHomeLocation() -> GeoPoint? {
+        (defaults.object(forKey: homeLocation) as! GeoPoint)
+    }
+    
+    func clearHomeLocation() {
+        defaults.removeObject(forKey: homeLocation)
+    }
+    
     func logout() {
         clearUserId()
         clearUserRole()
+        clearHomeLocation()
         
         // Post notification that user logged out
         NotificationCenter.default.post(name: .userDidLogout, object: nil)
