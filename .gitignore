@@ -34,3 +34,7 @@ DerivedData/
 # ---- Swift Package Manager ----
 .build/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+# --- Claude ----
+.claude
+skills-lock.json
